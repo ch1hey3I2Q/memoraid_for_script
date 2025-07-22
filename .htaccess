@@ -1,4 +1,0 @@
-AuthType Basic
-AuthName ”IDとパスワードを入力してください”
-AuthUserFile /home/ch1hey3i2q.github.io/memoraid_for_script/.htpasswd
-require valid-user
