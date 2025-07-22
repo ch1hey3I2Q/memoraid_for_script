@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName ”IDとパスワードを入力してください”
+AuthUserFile /home/ch1hey3I2Q.github.io.memoraid_for_script/.htpasswd
+require valid-user
