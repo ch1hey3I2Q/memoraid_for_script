@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width" />
+    <link href="styles/style.css" rel="stylesheet" />
+    <title>title</title>
+  </head>
+  <body>
+    <div id="tips">
+      <p id="tipstitle">使い方</p>
+      <p class="tip">・左右の&lt;&gt;ボタン、もしくは矢印キーでページを移動できます。</p>
+      <p class="tip">・ページ下部「ページ」のテキストボックスで指定のページに移動できます。</p>
+      <p class="tip">・ページ下部の「セリフ隠す人物」のチェックボックスでセリフを隠す人を選べます。</p>
+      <p class="tip">・「+人名」は誰のセリフかを追加で隠します。「その他」はセリフ以外のすべてを隠します。</p>
+      <p class="tip">・マスクをクリックするとその行を表示します。</p>
+      <p class="tip">・PCではEnterで次の行を表示、隠された行がなければ次のページへ移動できます。</p>
+      <p class="tip">・PCではRキーでそのページのマスクをリセット(再表示)できます。</p>
+      <p class="tip">・ページ下部の「全画面」で全画面表示ができます(試験的実装,バグあり)。</p>
+      <p class="tip">・ページ最下部の「使い方」からこのページを確認できます。</p>
+      <button id="close_tips">閉じる</button>
+    </div>
+    <div id="main">
+      <img id="script_img">
+      <div>
+        <div id="arrowright" class="arrowboxes">
+          <span class="arrows">&gt;</span>
+        </div>
+        <div id="arrowleft" class="arrowboxes">
+          <span class="arrows">&lt;</span>
+        </div>
+      </div>
+      <div id="masks">
+      </div>
+      <div id="options">
+        <div id="who">
+          <span>セリフ隠す人物</span>
+          <div>
+            <input type="checkbox" id="asari" name="checkboxes">
+            <label for="asari">朝利</label>
+          </div>
+          <div>
+            <input type="checkbox" id="itagaki" name="checkboxes">
+            <label for="itagaki">板垣</label>
+          </div>
+          <div>
+            <input type="checkbox" id="mochiduki" name="checkboxes">
+            <label for="mochiduki">望月</label>
+          </div>
+          <div>
+            <input type="checkbox" id="iketani" name="checkboxes">
+            <label for="iketani">池谷</label>
+          </div>
+          <div>
+            <input type="checkbox" id="kijima" name="checkboxes">
+            <label for="kijima">生島</label>
+          </div>
+          <div>
+            <input type="checkbox" id="yokouchi" name="checkboxes">
+            <label for="yokouchi">横内</label>
+          </div>
+          <div>
+            <input type="checkbox" id="yuuki" name="checkboxes">
+            <label for="yuuki">ゆうき</label>
+          </div>
+          <div>
+            <input type="checkbox" id="yuuko" name="checkboxes">
+            <label for="yuuko">祐子</label>
+          </div>
+          <div>
+            <input type="checkbox" id="name" name="checkboxes">
+            <label for="name">+人名</label>
+          </div>
+          <div>
+            <input type="checkbox" id="others" name="checkboxes">
+            <label for="others">その他</label>
+          </div>
+        </div>
+        <div id="image">
+          <span>画像</span>
+          <div>
+            <input type="radio" id="original" name="useimages" value="/original">
+            <label for="original">無編集・原本</label>
+          </div>
+          <div>
+            <input type="radio" id="narita_20250718" name="useimages" value="/markup_narita_20250718">
+            <label for="narita_20250718">書込・成田7/18</label>
+          </div>
+          <div>
+            <input type="radio" id="narita_20250720" name="useimages" value="/markup_narita_20250720" checked>
+            <label for="narita_20250720">書込・成田7/20</label>
+          </div>
+        </div>
+        <div id="page">
+          <span>ページ</span>
+          <div>
+            <input type="number" inputmode="numeric" id="inputpage" name="inputpage" max="78" min="0" value="0">
+          </div>
+        </div>
+        <div>
+          <button id="fullscreen">全画面</button>
+        </div>
+        <div>
+          <button id="open_tips">使い方</button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="scripts/main.js"></script>
+</html>
