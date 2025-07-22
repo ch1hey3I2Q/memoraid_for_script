@@ -48,8 +48,6 @@ body::-webkit-scrollbar {
 .arrowboxes {
     position: absolute;
     /* background-color: antiquewhite; */
-    width: 30px;
-    height: 100px;
 }
 
 #arrowright {
