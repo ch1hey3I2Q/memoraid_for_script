@@ -33,6 +33,8 @@ body::-webkit-scrollbar {
 }
 
 #main {
+    position: absolute;
+    top: 0%;
     visibility: hidden;
 }
 
