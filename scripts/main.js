@@ -13,6 +13,8 @@ const mag_top = {"朝利":0.121, "利":0.110, "板垣":0.121, "望月":0.121, "�
 const mag_left_offset = 0.1535;
 const mag_left_interval = 0.01953;
 
+const mag_arrowboxes_width = 0.050;
+
 const class_arrowboxes = document.getElementsByClassName("arrowboxes");
 const class_mask = document.getElementsByClassName("mask");
 
@@ -184,8 +186,6 @@ function reload () {
     while (class_mask.length > 0) {
         class_mask[0].remove();
     }
-
-   imagereload();
     
     for (let i = 0; i < speaker[page].length; i++) {
         let speaking = speaker[page][i];
@@ -219,6 +219,7 @@ function reload () {
         }
     }
 
+    imagereload();
     inputpage.value = page;
 }
 
@@ -244,7 +245,9 @@ function resize () {
     main.style.left = (window_width - img_width) / 2 + 'px';
 
     for (let i = 0; i < class_arrowboxes.length; i++) {
-        class_arrowboxes[i].style.top = img_height/2 + 'px';
+        class_arrowboxes[i].style.width = img_width * mag_arrowboxes_width + 'px';
+        class_arrowboxes[i].style.height = img_height + 'px';
+        class_arrowboxes[i].style.top = img_height / 2 + 'px';
         class_arrowboxes[i].style.left = img_width * (-i + 1) + 'px';
     }
 
@@ -306,7 +309,6 @@ open_tipsbtn.addEventListener('click', () => {
 
 imagechange();
 resize();
-
 
 
 const speaker = [
