@@ -239,7 +239,7 @@ function resize () {
     const img_height = window_width / window_height <= 1920 / 1200 ? window_width / 1920 * 1200 : window_height;
     script_img.style.width = img_width + 'px';
     script_img.style.height = img_height + 'px';
-
+    
     main.style.width = img_width + 'px';
     main.style.left = (window_width - img_width) / 2 + 'px';
 
