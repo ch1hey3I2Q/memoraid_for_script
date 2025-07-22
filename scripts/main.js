@@ -240,6 +240,9 @@ function resize () {
     script_img.style.width = img_width + 'px';
     script_img.style.height = img_height + 'px';
 
+    main.style.width = img_width + 'px';
+    main.style.left = (window_width - img_width) / 2 + 'px';
+
     for (let i = 0; i < class_arrowboxes.length; i++) {
         class_arrowboxes[i].style.top = img_height/2 + 'px';
         class_arrowboxes[i].style.left = img_width * (-i + 1) + 'px';
