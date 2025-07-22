@@ -1,0 +1,93 @@
+body {
+    user-select: none;
+    font-family: sans-serif;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+#tips {
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    top: 0%;
+    left: 0%;
+    z-index: 1;
+}
+
+#tipstitle {
+    position: relative;
+    font-size: 1.2rem;
+}
+
+.tip {
+    position: relative;
+    margin: 0%;
+}
+
+#close_tips {
+    position: relative;
+    margin-top: 20px;
+}
+
+#main {
+    visibility: hidden;
+}
+
+#script_img {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    /* width: 100%; */
+}
+
+.arrowboxes {
+    position: absolute;
+    /* background-color: antiquewhite; */
+    width: 30px;
+    height: 100px;
+}
+
+#arrowright {
+    transform: translate(-100%, -50%);
+}
+
+#arrowleft {
+    transform: translateY(-50%);
+}
+
+.arrows {
+    position: absolute;
+    color: aquamarine;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.mask {
+    position: absolute;
+    background-color: black;
+    margin: 0%;
+    padding: 0%;
+    /* width: 15px;
+    height: 440px;
+    top: 121px;
+    left: 290px; */
+    transform: translateX(-50%);
+}
+
+#options {
+    position: absolute;
+}
+
+/* #page {
+    position: relative;
+    top: 2px;
+} */
+
+#inputpage {
+    transform: translateY(-5%);
+    width: 35px;
+}
