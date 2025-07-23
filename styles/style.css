@@ -51,6 +51,14 @@ body::-webkit-scrollbar {
     margin-top: 15px;
 }
 
+#loadimagesstopbtn {
+    opacity: 0%;
+}
+
+.current_value {
+    opacity: 0%;
+}
+
 #main {
     position: absolute;
     top: 0%;
