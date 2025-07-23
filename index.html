@@ -24,8 +24,13 @@
       </div>
       <div id="loadimages">
         <p class="progress">事前に画像を読み込んでおくことで、初回表示時の遅延を軽減できます。</p>
+        <p class="progress">この「使い方」を閉じても読み込みは進行します。</p>
+        <p class="progress">読み込み中も通常通り使えますが、処理が重くなる可能性があります。</p>
         <p class="progress">端末や回線の状況によっては時間がかかる場合があります。</p>
         <button id="loadimagesbtn">画像一括読み込み</button>
+        <button id="loadimagesstopbtn">一時停止</button>
+        <span id="current_i" class="current_value"></span>
+        <span id="current_j" class="current_value"></span>
         <p id="progress" class="progress">進捗:　<span id="percent"></span>　<span id="completion">読み込み中</span></p>
       </div>
     </div>
