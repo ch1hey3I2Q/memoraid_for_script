@@ -321,8 +321,11 @@ const loadimg_befor = (i, j) => {
 }
 
 const loadimg_after = (i, j) => {
-    if (processed_count < min_count) {
-        percent.textContent = parseInt((79 * i + (j + 1) + denominator * processed_count) / (denominator * min_count) * 99) + '%';
+    if (processed_count == 0) {
+        percent.textContent = parseInt((79 * i + (j + 1)) / denominator * 80) + '%';
+    } else if (processed_count < min_count) {
+        // percent.textContent = parseInt((79 * i + (j + 1) + denominator * processed_count) / (denominator * min_count) * 99) + '%';
+        percent.textContent = parseInt((79 * i + (j + 1) + denominator * (processed_count - 1)) / (denominator * (min_count - 1)) * 19 + 80) + '%';
     }
     j++;
     if (j == 79) {
