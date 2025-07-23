@@ -307,19 +307,16 @@ open_tipsbtn.addEventListener('click', () => {
 })
 
 
-let loaded = 0;
-const molecule = document.getElementById("molecule");
-const completion = document.getElementById("completion");
+let start;
+let end;
 const loadimg_befor = (i, j) => {
-    if (i == undefined || j == undefined) {
-        i = this.i;
-        j = this.j;
+    if (i == 0 && j == 0) {
+        start = performance.now();
     }
-    console.log(i, j);
 
     const img = document.createElement('img');
     img.src = allimages_folder_path + useimages[i].value +  '/page_' + ('000' + j).slice( -3 ) + '.png';
-    img.style.visibility = 'hidden';
+    img.style.display = 'none';
     img.addEventListener('load', () => {
         loadimg_after(i, j);
         img.remove();
@@ -330,33 +327,50 @@ const loadimg_befor = (i, j) => {
 }
 
 const loadimg_after = (i, j) => {
-    if (i == undefined || j == undefined) {
-        i = this.i;
-        j = this.j;
-    };
-
-    molecule.textContent = 79 * i + (j + 1);
+    if (processed_count < min_count) {
+        percent.textContent = parseInt((79 * i + (j + 1) + denominator * processed_count) / (denominator * min_count) * 99) + '%';
+    }
     j++;
     if (j == 79) {
         j = 0;
         i++;
     }
     if (i < useimages.length) {
-        // setTimeout(loadimg.bind(undefined, i, j), 10);
         loadimg_befor(i, j);
-        // script_img.addEventListener('load', {i: i, j: j, handleEvent: loadimg}, true);
     } else {
-        completion.textContent = '完了';
+        processed_count++;
+        if (processed_count < min_count) {
+            loadimg_befor(0, 0);
+        } else {
+            end = performance.now();
+            const processing_time = end - start;
+            console.log(processing_time);
+            if(processing_time > 1000 && processed_count < max_count) {
+                loadimg_befor(0, 0);
+            } else {
+                percent.textContent = '100%';
+                completion.textContent = '完了';
+                min_count = 1;
+                processed_count = 0;
+            }
+        }
     }
 }
 
 const loadimgbtn = document.getElementById("loadimagesbtn");
 const progress = document.getElementById("progress");
-const denominator = document.getElementById("denominator");
+const percent = document.getElementById("percent");
+const completion = document.getElementById("completion");
+
+const denominator = 79 * (useimages.length);
+let min_count = 2;
+const max_count = 10;
+let processed_count = 0;
+
 loadimgbtn.addEventListener('click', () => {
-    denominator.textContent = 79 * (useimages.length);
-    progress.style.visibility = 'visible';
-    // setTimeout(loadimg.bind(undefined, 0, 0), 0);
+    // denominator.textContent = 79 * (useimages.length);
+    progress.style.opacity = '100%';
+    completion.textContent = '読み込み中'
     loadimg_befor(0, 0);
 })
 
