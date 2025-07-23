@@ -307,20 +307,26 @@ open_tipsbtn.addEventListener('click', () => {
 })
 
 
-const loadimg_befor = (i, j) => {
-    const img = document.createElement('img');
-    img.src = allimages_folder_path + useimages[i].value +  '/page_' + ('000' + j).slice( -3 ) + '.png';
-    img.style.display = 'none';
-    img.addEventListener('load', () => {
-        loadimg_after(i, j);
-        img.remove();
-    })
+function loadimg_befor (i, j) {
+    if (imgloading == 1) {
+        console.log(i, j);
+        const img = document.createElement('img');
+        img.src = allimages_folder_path + useimages[i].value +  '/page_' + ('000' + j).slice( -3 ) + '.png';
+        img.style.display = 'none';
+        img.addEventListener('load', () => {
+            loadimg_after(i, j);
+            img.remove();
+        })
 
-    const loadimages = document.getElementById("loadimages");
-    loadimages.appendChild(img);
+        const loadimages = document.getElementById("loadimages");
+        loadimages.appendChild(img);
+    } else if (imgloading == 2) {
+        current_i.textContent = i;
+        current_j.textContent = j;
+    }
 }
 
-const loadimg_after = (i, j) => {
+function loadimg_after (i, j) {
     if (processed_count == 0) {
         percent.textContent = parseInt((79 * i + (j + 1)) / denominator * 80) + '%';
     } else if (processed_count < min_count) {
@@ -339,6 +345,7 @@ const loadimg_after = (i, j) => {
         if (processed_count < min_count) {
             loadimg_befor(0, 0);
         } else {
+            loadimgstopbtn.style.opacity = '0%';
             percent.textContent = '100%';
             completion.textContent = '完了';
             min_count = 1;
@@ -348,7 +355,6 @@ const loadimg_after = (i, j) => {
     }
 }
 
-const loadimgbtn = document.getElementById("loadimagesbtn");
 const progress = document.getElementById("progress");
 const percent = document.getElementById("percent");
 const completion = document.getElementById("completion");
@@ -358,15 +364,32 @@ let min_count = 2;
 let processed_count = 0;
 
 let imgloading = 0;
+
+const loadimgbtn = document.getElementById("loadimagesbtn");
 loadimgbtn.addEventListener('click', () => {
     if (imgloading == 0) {
         imgloading = 1;
+        loadimgstopbtn.style.opacity = '100%';
         progress.style.opacity = '100%';
         completion.textContent = '読み込み中'
         loadimg_befor(0, 0);
     }
 })
 
+const current_i = document.getElementById("current_i");
+const current_j = document.getElementById("current_j");
+
+const loadimgstopbtn = document.getElementById("loadimagesstopbtn");
+loadimgstopbtn.addEventListener('click', () => {
+    if (imgloading == 1) {
+        imgloading = 2;
+        loadimgstopbtn.textContent = '再開';
+    } else if (imgloading == 2) {
+        imgloading = 1;
+        loadimg_befor(parseInt(current_i.textContent), parseInt(current_j.textContent));
+        loadimgstopbtn.textContent = '一時停止';
+    }
+})
 
 imagechange();
 resize();
