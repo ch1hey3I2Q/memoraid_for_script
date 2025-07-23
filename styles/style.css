@@ -43,7 +43,7 @@ body::-webkit-scrollbar {
 }
 
 #progress {
-    visibility: hidden;
+    opacity: 0%;
 }
 
 #loadimagesbtn {
