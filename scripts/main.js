@@ -307,13 +307,7 @@ open_tipsbtn.addEventListener('click', () => {
 })
 
 
-let start;
-let end;
 const loadimg_befor = (i, j) => {
-    if (i == 0 && j == 0) {
-        start = performance.now();
-    }
-
     const img = document.createElement('img');
     img.src = allimages_folder_path + useimages[i].value +  '/page_' + ('000' + j).slice( -3 ) + '.png';
     img.style.display = 'none';
@@ -342,17 +336,11 @@ const loadimg_after = (i, j) => {
         if (processed_count < min_count) {
             loadimg_befor(0, 0);
         } else {
-            end = performance.now();
-            const processing_time = end - start;
-            // console.log(processing_time);
-            if(processing_time > 1000 && processed_count < max_count) {
-                loadimg_befor(0, 0);
-            } else {
-                percent.textContent = '100%';
-                completion.textContent = '完了';
-                min_count = 1;
-                processed_count = 0;
-            }
+            percent.textContent = '100%';
+            completion.textContent = '完了';
+            min_count = 1;
+            processed_count = 0;
+            imgloading = 0;
         }
     }
 }
@@ -364,14 +352,16 @@ const completion = document.getElementById("completion");
 
 const denominator = 79 * (useimages.length);
 let min_count = 2;
-const max_count = 10;
 let processed_count = 0;
 
+let imgloading = 0;
 loadimgbtn.addEventListener('click', () => {
-    // denominator.textContent = 79 * (useimages.length);
-    progress.style.opacity = '100%';
-    completion.textContent = '読み込み中'
-    loadimg_befor(0, 0);
+    if (imgloading == 0) {
+        imgloading = 1;
+        progress.style.opacity = '100%';
+        completion.textContent = '読み込み中'
+        loadimg_befor(0, 0);
+    }
 })
 
 
