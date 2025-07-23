@@ -344,7 +344,7 @@ const loadimg_after = (i, j) => {
         } else {
             end = performance.now();
             const processing_time = end - start;
-            console.log(processing_time);
+            // console.log(processing_time);
             if(processing_time > 1000 && processed_count < max_count) {
                 loadimg_befor(0, 0);
             } else {
