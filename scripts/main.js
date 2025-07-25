@@ -7,7 +7,7 @@ const idToname = {"asari":"朝利", "itagaki":"板垣", "mochiduki":"望月", "i
 
 const exception = {"朝利・板垣":["朝利", "板垣"], "朝利・望月":["朝利", "望月"], "板垣・望月":["板垣", "望月"], "朝利・板垣・望月":["朝利", "板垣", "望月"], "板垣・池谷":["板垣", "池谷"], "利":["朝利"]};
 
-const mag_width = 0.015;
+const mag_width = 0.0175;
 const mag_bottom = 0.561;
 const mag_top = {"朝利":0.121, "利":0.110, "板垣":0.121, "望月":0.121, "池谷":0.121, "生島":0.121, "横内":0.121, "ゆうき":0.132, "祐子":0.121, "朝利・板垣":0.155, "朝利・望月":0.155, "板垣・望月":0.155, "朝利・板垣・望月":0.188, "板垣・池谷":0.155, "改行":0.107, "+人名":0.093, "その他":0.093};
 const mag_left_offset = 0.1535;
@@ -463,9 +463,9 @@ function loadimg_after (i, j) {
         if (processed_count < min_count) {
             loadimg_befor(0, 0);
         } else {
-            loadimgstopbtn.style.opacity = '0%';
             percent.textContent = '100%';
             completion.textContent = '完了';
+            loadimgbtn.textContent = '画像一括読み込み';
             min_count = 1;
             processed_count = 0;
             imgloading = 0;
@@ -482,30 +482,24 @@ let min_count = 2;
 let processed_count = 0;
 
 let imgloading = 0;
+const current_i = document.getElementById("current_i");
+const current_j = document.getElementById("current_j");
 
 const loadimgbtn = document.getElementById("loadimagesbtn");
 loadimgbtn.addEventListener('click', () => {
     if (imgloading == 0) {
         imgloading = 1;
-        loadimgstopbtn.style.opacity = '100%';
         progress.style.opacity = '100%';
-        completion.textContent = '読み込み中'
+        completion.textContent = '読み込み中';
+        loadimgbtn.textContent = '一時停止';
         loadimg_befor(0, 0);
-    }
-})
-
-const current_i = document.getElementById("current_i");
-const current_j = document.getElementById("current_j");
-
-const loadimgstopbtn = document.getElementById("loadimagesstopbtn");
-loadimgstopbtn.addEventListener('click', () => {
-    if (imgloading == 1) {
+    } else if (imgloading == 1) {
         imgloading = 2;
-        loadimgstopbtn.textContent = '再開';
+        loadimgbtn.textContent = '再開';
     } else if (imgloading == 2) {
         imgloading = 1;
         loadimg_befor(Number(current_i.textContent), Number(current_j.textContent));
-        loadimgstopbtn.textContent = '一時停止';
+        loadimgbtn.textContent = '一時停止';
     }
 })
 
