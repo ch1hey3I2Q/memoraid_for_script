@@ -119,12 +119,12 @@ inputpage.addEventListener('focus', inputpage.select);
 inputpage.addEventListener('change', jump_page);
 
 function jump_page () {
-    if (parseInt(inputpage.value, 10) < 0) {
+    if (Number(inputpage.value) < 0) {
         page = 0;
-    } else if (parseInt(inputpage.value, 10) > 78) {
+    } else if (Number(inputpage.value) > 78) {
         page = 78;
     } else if (inputpage.value != '') {
-        page = parseInt(inputpage.value, 10);
+        page = Number(inputpage.value);
     } else {
         inputpage.value = page;
         return;
@@ -265,6 +265,19 @@ function resize () {
 }
 
 
+let mouse_x;
+let mouse_y;
+window.addEventListener('mousemove', (e) => {
+    if (mask_clicked != null) {
+        mouse_x = e.pageX;
+        mouse_y = e.pageY;
+    }
+})
+
+let mask_clicked = null;
+let downtime;
+let islongclick = false;
+let intervalid = null;
 function addmask (row) {
     const masks = document.getElementById("masks");
     const p = document.createElement('p');
@@ -278,13 +291,54 @@ function addmask (row) {
     p.style.top = img_width * mag_top[name] + 'px';
     p.style.left = img_width * mag_left_offset + img_width * mag_left_interval * (35 - row) + 'px';
 
-    masks.appendChild(p);
-
-    const pElm = document.getElementById(p_id);
-    pElm.addEventListener('click', () => {
-        pElm.remove();
+    p.addEventListener('mousedown', (e) => {
+        downtime = performance.now();
+        mask_clicked = e.target;
+        setTimeout(() => {
+            if (mask_clicked != null && mask_clicked == e.target && performance.now() - downtime >= 500) {
+                islongclick = true;
+            }
+        }, 500);
+        mouse_x = e.pageX;
+        mouse_y = e.pageY;
+        const down_x = e.pageX;
+        const down_y = e.pageY;
+        if (intervalid == null) {
+            intervalid = setInterval(() => {
+                if (islongclick || mouse_x != down_x || mouse_y != down_y) {
+                    if (img_width * mag_top[name] >= mouse_y) {
+                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                        p.style.top = img_width * mag_top[name] + 'px';
+                    } else if (img_width * mag_bottom <= mouse_y) {
+                        p.style.height = '0px';
+                    } else {
+                        p.style.height = img_width * mag_bottom - mouse_y + 'px';
+                        p.style.top = mouse_y + 'px';
+                    }
+                }
+                if (mask_clicked == null) {
+                    if (islongclick) {
+                        islongclick = false;
+                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                        p.style.top = img_width * mag_top[name] + 'px';
+                    } else {
+                        p.remove();
+                    }
+                    clearInterval(intervalid);
+                    intervalid = null;
+                }
+            }, 0);
+        }
     })
+
+    masks.appendChild(p);    
 }
+
+window.addEventListener('mouseup', () => {
+    if (mask_clicked != null) {
+        mask_clicked = null;
+    }
+})
 
 
 const main = document.getElementById("main");
@@ -309,7 +363,6 @@ open_tipsbtn.addEventListener('click', () => {
 
 function loadimg_befor (i, j) {
     if (imgloading == 1) {
-        console.log(i, j);
         const img = document.createElement('img');
         img.src = allimages_folder_path + useimages[i].value +  '/page_' + ('000' + j).slice( -3 ) + '.png';
         img.style.display = 'none';
@@ -386,7 +439,7 @@ loadimgstopbtn.addEventListener('click', () => {
         loadimgstopbtn.textContent = '再開';
     } else if (imgloading == 2) {
         imgloading = 1;
-        loadimg_befor(parseInt(current_i.textContent), parseInt(current_j.textContent));
+        loadimg_befor(Number(current_i.textContent), Number(current_j.textContent));
         loadimgstopbtn.textContent = '一時停止';
     }
 })
