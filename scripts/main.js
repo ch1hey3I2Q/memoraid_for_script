@@ -232,6 +232,7 @@ window.addEventListener('resize', () => {
     }
 })
 
+
 function resize () {
     const window_width = document.querySelector('html').clientWidth;
     const window_height = document.querySelector('html').clientHeight;
