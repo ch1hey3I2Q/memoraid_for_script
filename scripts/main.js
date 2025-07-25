@@ -23,7 +23,7 @@ let img_width;
 
 
 for (let i = 0; i < class_arrowboxes.length; i++) {
-    class_arrowboxes[i].addEventListener('mousedown', () => {
+    class_arrowboxes[i].addEventListener('click', () => {
         page += (i * 2 - 1);
         if (page < 0) {
             page = 0;
@@ -272,6 +272,7 @@ let mouse_x;
 let mouse_y;
 if (istouchable) {
     window.addEventListener('touchmove', (e) => {
+        e.preventDefault();
         if (mask_clicked != null) {
             mouse_x = e.pageX;
             mouse_y = e.pageY;
@@ -305,7 +306,8 @@ function addmask (row) {
     p.style.left = img_width * mag_left_offset + img_width * mag_left_interval * (35 - row) + 'px';
 
     if (istouchable) {
-            p.addEventListener('touchstart', (e) => {
+        p.addEventListener('touchstart', (e) => {
+            e.preventDefault();
             downtime = performance.now();
             mask_clicked = e.target;
             setTimeout(() => {
@@ -345,7 +347,7 @@ function addmask (row) {
             }
         })
     } else {
-            p.addEventListener('mousedown', (e) => {
+        p.addEventListener('mousedown', (e) => {
             downtime = performance.now();
             mask_clicked = e.target;
             setTimeout(() => {
@@ -392,6 +394,7 @@ function addmask (row) {
 
 if (istouchable) {
     window.addEventListener('touchend', () => {
+        e.preventDefault();
         if (mask_clicked != null) {
             mask_clicked = null;
         }
