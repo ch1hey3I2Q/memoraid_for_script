@@ -272,10 +272,9 @@ let mouse_x;
 let mouse_y;
 if (istouchable) {
     window.addEventListener('touchmove', (e) => {
-        e.preventDefault();
         if (mask_clicked != null) {
-            mouse_x = e.pageX;
-            mouse_y = e.pageY;
+            mouse_x = e.touches[0].pageX;
+            mouse_y = e.touches[0].pageY;
         }
     })
 } else {
@@ -393,8 +392,7 @@ function addmask (row) {
 }
 
 if (istouchable) {
-    window.addEventListener('touchend', () => {
-        e.preventDefault();
+    window.addEventListener('touchend', (e) => {
         if (mask_clicked != null) {
             mask_clicked = null;
         }
