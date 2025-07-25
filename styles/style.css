@@ -2,7 +2,6 @@ body {
     user-select: none;
     font-family: sans-serif;
     -webkit-user-select:none;
-    pointer-events:none;
     -webkit-touch-callout:none;
 }
 
