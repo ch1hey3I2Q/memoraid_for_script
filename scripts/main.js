@@ -266,7 +266,7 @@ function resize () {
 }
 
 
-const istouchable = window.ontouchstart === undefined ? true : false;
+const istouchable = window.ontouchstart === undefined ? false : true;
 
 let pointer_x;
 let pointer_y;
