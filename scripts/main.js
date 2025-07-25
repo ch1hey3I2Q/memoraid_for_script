@@ -268,20 +268,20 @@ function resize () {
 
 const istouchable = window.ontouchstart === undefined ? true : false;
 
-let mouse_x;
-let mouse_y;
+let pointer_x;
+let pointer_y;
 if (istouchable) {
     window.addEventListener('touchmove', (e) => {
         if (mask_clicked != null) {
-            mouse_x = e.touches[0].pageX;
-            mouse_y = e.touches[0].pageY;
+            pointer_x = e.touches[0].pageX;
+            pointer_y = e.touches[0].pageY;
         }
     })
 } else {
     window.addEventListener('mousemove', (e) => {
         if (mask_clicked != null) {
-            mouse_x = e.pageX;
-            mouse_y = e.pageY;
+            pointer_x = e.pageX;
+            pointer_y = e.pageY;
         }
     })
 }
@@ -314,21 +314,21 @@ function addmask (row) {
                     islongclick = true;
                 }
             }, 500);
-            mouse_x = e.pageX;
-            mouse_y = e.pageY;
-            const down_x = e.pageX;
-            const down_y = e.pageY;
+            pointer_x = e.pageX;
+            pointer_y = e.pageY;
+            const down_x = e.touches[0].pageX;
+            const down_y = e.touches[0].pageY;
             if (intervalid == null) {
                 intervalid = setInterval(() => {
-                    if (islongclick || mouse_x != down_x || mouse_y != down_y) {
-                        if (img_width * mag_top[name] >= mouse_y) {
+                    if (islongclick || pointer_x != down_x || pointer_y != down_y) {
+                        if (img_width * mag_top[name] >= pointer_y) {
                             p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
                             p.style.top = img_width * mag_top[name] + 'px';
-                        } else if (img_width * mag_bottom <= mouse_y) {
+                        } else if (img_width * mag_bottom <= pointer_y) {
                             p.style.height = '0px';
                         } else {
-                            p.style.height = img_width * mag_bottom - mouse_y + 'px';
-                            p.style.top = mouse_y + 'px';
+                            p.style.height = img_width * mag_bottom - pointer_y + 'px';
+                            p.style.top = pointer_y + 'px';
                         }
                     }
                     if (mask_clicked == null) {
@@ -354,21 +354,21 @@ function addmask (row) {
                     islongclick = true;
                 }
             }, 500);
-            mouse_x = e.pageX;
-            mouse_y = e.pageY;
+            pointer_x = e.pageX;
+            pointer_y = e.pageY;
             const down_x = e.pageX;
             const down_y = e.pageY;
             if (intervalid == null) {
                 intervalid = setInterval(() => {
-                    if (islongclick || mouse_x != down_x || mouse_y != down_y) {
-                        if (img_width * mag_top[name] >= mouse_y) {
+                    if (islongclick || pointer_x != down_x || pointer_y != down_y) {
+                        if (img_width * mag_top[name] >= pointer_y) {
                             p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
                             p.style.top = img_width * mag_top[name] + 'px';
-                        } else if (img_width * mag_bottom <= mouse_y) {
+                        } else if (img_width * mag_bottom <= pointer_y) {
                             p.style.height = '0px';
                         } else {
-                            p.style.height = img_width * mag_bottom - mouse_y + 'px';
-                            p.style.top = mouse_y + 'px';
+                            p.style.height = img_width * mag_bottom - pointer_y + 'px';
+                            p.style.top = pointer_y + 'px';
                         }
                     }
                     if (mask_clicked == null) {
