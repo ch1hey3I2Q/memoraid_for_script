@@ -1,6 +1,7 @@
 let page = 0;
 
-const allimages_folder_path = './images';
+const allimages_folder_path = './images/compressed';
+let images_folder_path;
 
 const maskon = {"朝利":0, "板垣":0, "望月":0, "池谷":0, "生島":0, "横内":0, "ゆうき":0, "祐子":0, "+人名":0, "その他":0};
 const idToname = {"asari":"朝利", "itagaki":"板垣", "mochiduki":"望月", "iketani":"池谷", "kijima":"生島", "yokouchi":"横内", "yuuki":"ゆうき", "yuuko":"祐子", "name":"+人名", "others":"その他"};
@@ -87,9 +88,9 @@ document.body.addEventListener('keydown', (e) => {
 })
 
 
-const checkboxes = document.getElementsByName("checkboxes");
-for (let i = 0; i < checkboxes.length; i++) {
-    checkboxes[i].addEventListener('change', (e) => {
+const mask_specker = document.getElementsByName("mask_specker");
+for (let i = 0; i < mask_specker.length; i++) {
+    mask_specker[i].addEventListener('change', (e) => {
         if (e.currentTarget.checked) {
             maskon[idToname[e.currentTarget.id]] = 1;
         } else {
@@ -266,25 +267,22 @@ function resize () {
 }
 
 
-const istouchable = window.ontouchstart === undefined ? false : true;
-
 let pointer_x;
 let pointer_y;
-if (istouchable) {
-    window.addEventListener('touchmove', (e) => {
-        if (mask_clicked != null) {
-            pointer_x = e.touches[0].pageX;
-            pointer_y = e.touches[0].pageY;
-        }
-    })
-} else {
-    window.addEventListener('mousemove', (e) => {
-        if (mask_clicked != null) {
-            pointer_x = e.pageX;
-            pointer_y = e.pageY;
-        }
-    })
-}
+
+window.addEventListener('touchmove', (e) => {
+    if (mask_clicked != null) {
+        pointer_x = e.touches[0].pageX;
+        pointer_y = e.touches[0].pageY;
+    }
+})
+
+window.addEventListener('mousemove', (e) => {
+    if (mask_clicked != null) {
+        pointer_x = e.pageX;
+        pointer_y = e.pageY;
+    }
+})
 
 
 let mask_clicked = null;
@@ -303,107 +301,102 @@ function addmask (row) {
     p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
     p.style.top = img_width * mag_top[name] + 'px';
     p.style.left = img_width * mag_left_offset + img_width * mag_left_interval * (35 - row) + 'px';
-
-    if (istouchable) {
-        p.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            downtime = performance.now();
-            mask_clicked = e.target;
-            setTimeout(() => {
-                if (mask_clicked != null && mask_clicked == e.target && performance.now() - downtime >= 500) {
-                    islongclick = true;
-                }
-            }, 500);
-            pointer_x = e.pageX;
-            pointer_y = e.pageY;
-            const down_x = e.touches[0].pageX;
-            const down_y = e.touches[0].pageY;
-            if (intervalid == null) {
-                intervalid = setInterval(() => {
-                    if (islongclick || pointer_x != down_x || pointer_y != down_y) {
-                        if (img_width * mag_top[name] >= pointer_y) {
-                            p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                            p.style.top = img_width * mag_top[name] + 'px';
-                        } else if (img_width * mag_bottom <= pointer_y) {
-                            p.style.height = '0px';
-                        } else {
-                            p.style.height = img_width * mag_bottom - pointer_y + 'px';
-                            p.style.top = pointer_y + 'px';
-                        }
-                    }
-                    if (mask_clicked == null) {
-                        if (islongclick) {
-                            islongclick = false;
-                            p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                            p.style.top = img_width * mag_top[name] + 'px';
-                        } else {
-                            p.remove();
-                        }
-                        clearInterval(intervalid);
-                        intervalid = null;
-                    }
-                }, 0);
-            }
-        })
-    } else {
-        p.addEventListener('mousedown', (e) => {
-            downtime = performance.now();
-            mask_clicked = e.target;
-            setTimeout(() => {
-                if (mask_clicked != null && mask_clicked == e.target && performance.now() - downtime >= 500) {
-                    islongclick = true;
-                }
-            }, 500);
-            pointer_x = e.pageX;
-            pointer_y = e.pageY;
-            const down_x = e.pageX;
-            const down_y = e.pageY;
-            if (intervalid == null) {
-                intervalid = setInterval(() => {
-                    if (islongclick || pointer_x != down_x || pointer_y != down_y) {
-                        if (img_width * mag_top[name] >= pointer_y) {
-                            p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                            p.style.top = img_width * mag_top[name] + 'px';
-                        } else if (img_width * mag_bottom <= pointer_y) {
-                            p.style.height = '0px';
-                        } else {
-                            p.style.height = img_width * mag_bottom - pointer_y + 'px';
-                            p.style.top = pointer_y + 'px';
-                        }
-                    }
-                    if (mask_clicked == null) {
-                        if (islongclick) {
-                            islongclick = false;
-                            p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                            p.style.top = img_width * mag_top[name] + 'px';
-                        } else {
-                            p.remove();
-                        }
-                        clearInterval(intervalid);
-                        intervalid = null;
-                    }
-                }, 0);
-            }
-        })
-    }
     
+    p.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        downtime = performance.now();
+        mask_clicked = e.target;
+        setTimeout(() => {
+            if (mask_clicked != null && mask_clicked == e.target && performance.now() - downtime >= 500) {
+                islongclick = true;
+            }
+        }, 500);
+        const down_x = e.touches[0].pageX;
+        const down_y = e.touches[0].pageY;
+        pointer_x = e.touches[0].pageX;
+        pointer_y = e.touches[0].pageY;
+        if (intervalid == null) {
+            intervalid = setInterval(() => {
+                if (islongclick || pointer_x != down_x || pointer_y != down_y) {
+                    if (img_width * mag_top[name] >= pointer_y) {
+                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                        p.style.top = img_width * mag_top[name] + 'px';
+                    } else if (img_width * mag_bottom <= pointer_y) {
+                        p.style.height = '0px';
+                    } else {
+                        p.style.height = img_width * mag_bottom - pointer_y + 'px';
+                        p.style.top = pointer_y + 'px';
+                    }
+                }
+                if (mask_clicked == null) {
+                    if (islongclick) {
+                        islongclick = false;
+                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                        p.style.top = img_width * mag_top[name] + 'px';
+                    } else {
+                        p.remove();
+                    }
+                    clearInterval(intervalid);
+                    intervalid = null;
+                }
+            }, 0);
+        }
+    })
+
+    p.addEventListener('mousedown', (e) => {
+        downtime = performance.now();
+        mask_clicked = e.target;
+        setTimeout(() => {
+            if (mask_clicked != null && mask_clicked == e.target && performance.now() - downtime >= 500) {
+                islongclick = true;
+            }
+        }, 500);
+        const down_x = e.pageX;
+        const down_y = e.pageY;
+        pointer_x = e.pageX;
+        pointer_y = e.pageY;
+        if (intervalid == null) {
+            intervalid = setInterval(() => {
+                if (islongclick || pointer_x != down_x || pointer_y != down_y) {
+                    if (img_width * mag_top[name] >= pointer_y) {
+                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                        p.style.top = img_width * mag_top[name] + 'px';
+                    } else if (img_width * mag_bottom <= pointer_y) {
+                        p.style.height = '0px';
+                    } else {
+                        p.style.height = img_width * mag_bottom - pointer_y + 'px';
+                        p.style.top = pointer_y + 'px';
+                    }
+                }
+                if (mask_clicked == null) {
+                    if (islongclick) {
+                        islongclick = false;
+                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                        p.style.top = img_width * mag_top[name] + 'px';
+                    } else {
+                        p.remove();
+                    }
+                    clearInterval(intervalid);
+                    intervalid = null;
+                }
+            }, 0);
+        }
+    })
 
     masks.appendChild(p);    
 }
 
-if (istouchable) {
-    window.addEventListener('touchend', (e) => {
-        if (mask_clicked != null) {
-            mask_clicked = null;
-        }
-    })
-} else {
-    window.addEventListener('mouseup', () => {
-        if (mask_clicked != null) {
-            mask_clicked = null;
-        }
-    })
-}
+window.addEventListener('touchend', (e) => {
+    if (mask_clicked != null) {
+        mask_clicked = null;
+    }
+})
+
+window.addEventListener('mouseup', () => {
+    if (mask_clicked != null) {
+        mask_clicked = null;
+    }
+})
 
 
 const main = document.getElementById("main");
@@ -426,82 +419,137 @@ open_tipsbtn.addEventListener('click', () => {
 })
 
 
-function loadimg_befor (i, j) {
-    if (imgloading == 1) {
+function loadimg_befor (i, j, images) {
+    if (imgloading['any'] == 1) {
         const img = document.createElement('img');
-        img.src = allimages_folder_path + useimages[i].value +  '/page_' + ('000' + j).slice( -3 ) + '.png';
+        const path = images == 'load_all' ? document.getElementById(loadimages_selected[i]).value : document.getElementById(images).value;
+        img.src = allimages_folder_path + path +  '/page_' + ('000' + j).slice( -3 ) + '.png';
         img.style.display = 'none';
         img.addEventListener('load', () => {
-            loadimg_after(i, j);
+            loadimg_after(i, j, images);
             img.remove();
         })
 
         const loadimages = document.getElementById("loadimages");
         loadimages.appendChild(img);
-    } else if (imgloading == 2) {
+    } else if (imgloading['any'] == 2) {
         current_i.textContent = i;
         current_j.textContent = j;
     }
 }
 
-function loadimg_after (i, j) {
+function loadimg_after (i, j, images) {
+    denom = images == 'load_all' ? denominator : 79;
     if (processed_count == 0) {
-        percent.textContent = parseInt((79 * i + (j + 1)) / denominator * 80) + '%';
-    } else if (processed_count < min_count) {
+        percent.textContent = parseInt((79 * i + (j + 1)) / denom * 80) + '%';
+    } else if (processed_count < min_count[images]) {
         // percent.textContent = parseInt((79 * i + (j + 1) + denominator * processed_count) / (denominator * min_count) * 99) + '%';
-        percent.textContent = parseInt((79 * i + (j + 1) + denominator * (processed_count - 1)) / (denominator * (min_count - 1)) * 19 + 80) + '%';
+        percent.textContent = parseInt((79 * i + (j + 1) + denom * (processed_count - 1)) / (denom * (min_count[images] - 1)) * 19 + 80) + '%';
     }
+
     j++;
     if (j == 79) {
         j = 0;
         i++;
     }
-    if (i < useimages.length) {
-        loadimg_befor(i, j);
+
+    if (i < 1 || (images == 'load_all' && i < loadimages_selected.length)) {
+        loadimg_befor(i, j, images);
     } else {
         processed_count++;
-        if (processed_count < min_count) {
-            loadimg_befor(0, 0);
+        if (processed_count < min_count[images]) {
+            loadimg_befor(0, 0, images);
         } else {
-            percent.textContent = '100%';
+            if (images == 'load_all') {
+                for (let k = 0; k < loadimages_selected.length; k ++) {
+                    const isloaded = document.getElementById('isloaded_' + loadimages_selected[k]);
+                    isloaded.textContent = '済';
+                    if (imgloading[loadimages_selected[k]] == 0) {
+                        const eachload_imgbtn = document.getElementById(loadimages_selected[k] + 'btn');
+                        eachload_imgbtn.textContent = '再読み込み';
+                    }
+                }
+            } else {
+                const isloaded = document.getElementById('isloaded_' + images);
+                isloaded.textContent = '済';
+            }
+            const load_imgbtn = document.getElementById(images + 'btn');
+            load_imgbtn.textContent = images == 'load_all' ? '選択一括読み込み' : '再読み込み';
+            percent.textContent = '100%';                
             completion.textContent = '完了';
-            loadimgbtn.textContent = '画像一括読み込み';
-            min_count = 1;
+
+            min_count[images] = 1;
             processed_count = 0;
-            imgloading = 0;
+            imgloading[images] = 0;
+            imgloading['any'] = 0;
         }
     }
 }
 
-const progress = document.getElementById("progress");
-const percent = document.getElementById("percent");
-const completion = document.getElementById("completion");
+const loadimages_selected = [];
+const loadimages = document.getElementsByName("loadimages");
+for (let i = 0; i < loadimages.length; i++) {
+    loadimages[i].addEventListener('change', (e) => {
+        if (e.currentTarget.checked) {
+            loadimages_selected.push(e.currentTarget.id);
+        } else {
+            loadimages_selected.splice(loadimages_selected.indexOf(e.currentTarget.id), 1);
+        }
+        denominator = 79 * (loadimages_selected.length)
+    })
+}
 
-const denominator = 79 * (useimages.length);
-let min_count = 2;
+const min_count = {'load_all':2, "load_original":2, "load_narita_20250718":2, "load_narita_20250720":2};
 let processed_count = 0;
+let denominator;
 
-let imgloading = 0;
-const current_i = document.getElementById("current_i");
-const current_j = document.getElementById("current_j");
+const imgloading  = {'any':0, 'load_all':0, "load_original":0, "load_narita_20250718":0, "load_narita_20250720":0};
+let current_i;
+let current_j;
+let progress;
+let percent;
+let completion;
 
-const loadimgbtn = document.getElementById("loadimagesbtn");
-loadimgbtn.addEventListener('click', () => {
-    if (imgloading == 0) {
-        imgloading = 1;
-        progress.style.opacity = '100%';
-        completion.textContent = '読み込み中';
-        loadimgbtn.textContent = '一時停止';
-        loadimg_befor(0, 0);
-    } else if (imgloading == 1) {
-        imgloading = 2;
-        loadimgbtn.textContent = '再開';
-    } else if (imgloading == 2) {
-        imgloading = 1;
-        loadimg_befor(Number(current_i.textContent), Number(current_j.textContent));
-        loadimgbtn.textContent = '一時停止';
-    }
-})
+const class_load_imgbtn = document.getElementsByClassName("load_imagesbtn");
+for (let i = 0; i < class_load_imgbtn.length; i++) {
+    class_load_imgbtn[i].addEventListener('click', () => {
+        const images = class_load_imgbtn[i].id.split('btn')[0];
+        if (imgloading['any'] == 0 && imgloading[images] == 0) {
+            if (images != 'load_all' || loadimages_selected.length > 0) {
+                imgloading['any'] = 1;
+                imgloading[images] = 1;
+
+                progress = document.getElementById('progress_' + images);
+                percent = document.getElementById('percent_' + images);
+                completion = document.getElementById('completion_' + images);
+                current_i = document.getElementById('current_i_' + images);
+                current_j = document.getElementById('current_j_' + images);
+
+                progress.style.opacity = '100%';
+                completion.textContent = '読み込み中';
+                class_load_imgbtn[i].textContent = '一時停止';
+
+                loadimg_befor(0, 0, images);
+            }
+        } else if (imgloading['any'] == 1 && imgloading[images] == 1) {
+            imgloading['any'] = 0;
+            imgloading[images] = 2;
+            class_load_imgbtn[i].textContent = '再開';
+        } else if (imgloading['any'] == 0 && imgloading[images] == 2) {
+            imgloading['any'] = 1;
+            imgloading[images] = 1;
+
+            progress = document.getElementById('progress_' + images);
+            percent = document.getElementById('percent_' + images);
+            completion = document.getElementById('completion_' + images);
+            current_i = document.getElementById('current_i_' + images);
+            current_j = document.getElementById('current_j_' + images);
+
+            loadimg_befor(Number(current_i.textContent), Number(current_j.textContent), images);
+            class_load_imgbtn[i].textContent = '一時停止';
+        }
+    })
+}
 
 
 imagechange();
