@@ -9,6 +9,7 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+
 #tips {
     position: absolute;
     background-color: white;
@@ -39,27 +40,49 @@ body::-webkit-scrollbar {
     margin-top: 40px;
 }
 
-.progress {
+.tip_load {
     position: relative;
     margin: 0%;
 }
 
-#progress {
+.progress {
     opacity: 0%;
 }
 
-#loadimagesbtn {
+.eachprogress {
+    position: absolute;
+    left: 270px;
+}
+
+#load_allbtn {
     position: relative;
     margin-top: 15px;
-}
-
-#loadimagesstopbtn {
-    opacity: 0%;
 }
 
 .current_value {
     opacity: 0%;
 }
+
+#select_loadimg {
+    position: relative;
+    margin-top: 15px;
+}
+
+input[name = "loadimages"] {
+    position: relative;
+    margin-top: 7px;
+}
+
+.load_eachimagesbtn {
+    position: absolute;
+    left: 150px;
+}
+
+.isloaded {
+    position: absolute;
+    left: 235px;
+}
+
 
 #main {
     position: absolute;
@@ -110,11 +133,6 @@ body::-webkit-scrollbar {
 #options {
     position: absolute;
 }
-
-/* #page {
-    position: relative;
-    top: 2px;
-} */
 
 #inputpage {
     transform: translateY(-5%);
