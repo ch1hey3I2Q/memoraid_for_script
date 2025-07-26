@@ -24,7 +24,7 @@ let img_width;
 
 
 for (let i = 0; i < class_arrowboxes.length; i++) {
-    class_arrowboxes[i].addEventListener('touchstart', (e) => {
+    class_arrowboxes[i].addEventListener('touchend', (e) => {
         e.preventDefault();
         page += (i * 2 - 1);
         if (page < 0) {
