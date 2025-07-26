@@ -24,15 +24,45 @@
         <button id="close_tips">閉じる</button>
       </div>
       <div id="loadimages">
-        <p class="progress">事前に画像を読み込んでおくことで、初回表示時の遅延を軽減できます。</p>
-        <p class="progress">一括読み込みをしなくても通常通り使えます。</p>
-        <p class="progress">この「使い方」を閉じても読み込みは進行します。</p>
-        <p class="progress">読み込み中も通常通り使えますが、処理が重くなる可能性があります。</p>
-        <p class="progress">端末や回線の状況によっては時間がかかる場合があります。</p>
-        <button id="loadimagesbtn">画像一括読み込み</button>
-        <span id="current_i" class="current_value"></span>
-        <span id="current_j" class="current_value"></span>
-        <p id="progress" class="progress">進捗:　<span id="percent"></span>　<span id="completion">読み込み中</span></p>
+        <p class="tip_load">事前に画像を読み込んでおくことで、初回表示時の遅延を軽減できます。</p>
+        <p class="tip_load">事前に読み込みをしなくても通常通り使えます。</p>
+        <p class="tip_load">この「使い方」を閉じても読み込みは進行します。</p>
+        <p class="tip_load">読み込み中も通常通り使えますが、処理が重くなる可能性があります。</p>
+        <p class="tip_load">画像1セットにつき約6~8MBです。モバイルデータ通信使用時の事前一括読み込みは自己責任でお願いします。</p>
+        <p class="tip_load">端末や回線の状況によっては時間がかかる場合があります。</p>
+        <button id="load_allbtn" class="load_imagesbtn">選択一括読み込み</button>
+        <span id="current_i_load_all" class="current_value"></span>
+        <span id="current_j_load_all" class="current_value"></span>
+        <p id="progress_load_all" class="tip_load progress">　<span id="percent_load_all"></span>　<span id="completion_load_all">読み込み中</span></p>
+        <div id="select_loadimg">
+          <div>
+            <input type="checkbox" id="load_original" name="loadimages" value="/original">
+            <label for="load_original">無編集・原本</label>
+            <button id="load_originalbtn" class="load_imagesbtn load_eachimagesbtn">読み込み</button>
+            <span id="progress_load_original" class="progress eachprogress"><span id="percent_load_original"></span>　<span id="completion_load_original">　読み込み中</span></span>
+            <span id="isloaded_load_original" class="isloaded">未</span>
+            <span id="current_i_load_original" class="current_value"></span>
+            <span id="current_j_load_original" class="current_value"></span>
+          </div>
+          <div>
+            <input type="checkbox" id="load_narita_20250718" name="loadimages" value="/markup_narita_20250718">
+            <label for="load_narita_20250718">書込・成田7/18</label>
+            <button id="load_narita_20250718btn" class="load_imagesbtn load_eachimagesbtn">読み込み</button>
+            <span id="progress_load_narita_20250718" class="progress eachprogress"><span id="percent_load_narita_20250718"></span>　<span id="completion_load_narita_20250718">　読み込み中</span></span>
+            <span id="isloaded_load_narita_20250718" class="isloaded">未</span>
+            <span id="current_i_load_narita_20250718" class="current_value"></span>
+            <span id="current_j_load_narita_20250718" class="current_value"></span>
+          </div>
+          <div>
+            <input type="checkbox" id="load_narita_20250720" name="loadimages" value="/markup_narita_20250720">
+            <label for="load_narita_20250720">書込・成田7/20</label>
+            <button id="load_narita_20250720btn" class="load_imagesbtn load_eachimagesbtn">読み込み</button>
+            <span id="progress_load_narita_20250720" class="progress eachprogress"><span id="percent_load_narita_20250720"></span>　<span id="completion_load_narita_20250720">　読み込み中</span></span>
+            <span id="isloaded_load_narita_20250720" class="isloaded">未</span>
+            <span id="current_i_load_narita_20250720" class="current_value"></span>
+            <span id="current_j_load_narita_20250720" class="current_value"></span>
+          </div>
+        </div>
       </div>
     </div>
     <div id="main">
@@ -51,59 +81,59 @@
         <div id="who">
           <span>セリフ隠す人物</span>
           <div>
-            <input type="checkbox" id="asari" name="checkboxes">
+            <input type="checkbox" id="asari" name="mask_specker">
             <label for="asari">朝利</label>
           </div>
           <div>
-            <input type="checkbox" id="itagaki" name="checkboxes">
+            <input type="checkbox" id="itagaki" name="mask_specker">
             <label for="itagaki">板垣</label>
           </div>
           <div>
-            <input type="checkbox" id="mochiduki" name="checkboxes">
+            <input type="checkbox" id="mochiduki" name="mask_specker">
             <label for="mochiduki">望月</label>
           </div>
           <div>
-            <input type="checkbox" id="iketani" name="checkboxes">
+            <input type="checkbox" id="iketani" name="mask_specker">
             <label for="iketani">池谷</label>
           </div>
           <div>
-            <input type="checkbox" id="kijima" name="checkboxes">
+            <input type="checkbox" id="kijima" name="mask_specker">
             <label for="kijima">生島</label>
           </div>
           <div>
-            <input type="checkbox" id="yokouchi" name="checkboxes">
+            <input type="checkbox" id="yokouchi" name="mask_specker">
             <label for="yokouchi">横内</label>
           </div>
           <div>
-            <input type="checkbox" id="yuuki" name="checkboxes">
+            <input type="checkbox" id="yuuki" name="mask_specker">
             <label for="yuuki">ゆうき</label>
           </div>
           <div>
-            <input type="checkbox" id="yuuko" name="checkboxes">
+            <input type="checkbox" id="yuuko" name="mask_specker">
             <label for="yuuko">祐子</label>
           </div>
           <div>
-            <input type="checkbox" id="name" name="checkboxes">
+            <input type="checkbox" id="name" name="mask_specker">
             <label for="name">+人名</label>
           </div>
           <div>
-            <input type="checkbox" id="others" name="checkboxes">
+            <input type="checkbox" id="others" name="mask_specker">
             <label for="others">その他</label>
           </div>
         </div>
         <div id="image">
           <span>画像</span>
           <div>
-            <input type="radio" id="original" name="useimages" value="/original">
-            <label for="original">無編集・原本</label>
+            <input type="radio" id="use_original" name="useimages" value="/original">
+            <label for="use_original">無編集・原本</label>
           </div>
           <div>
-            <input type="radio" id="narita_20250718" name="useimages" value="/markup_narita_20250718">
-            <label for="narita_20250718">書込・成田7/18</label>
+            <input type="radio" id="use_narita_20250718" name="useimages" value="/markup_narita_20250718">
+            <label for="use_narita_20250718">書込・成田7/18</label>
           </div>
           <div>
-            <input type="radio" id="narita_20250720" name="useimages" value="/markup_narita_20250720" checked>
-            <label for="narita_20250720">書込・成田7/20</label>
+            <input type="radio" id="use_narita_20250720" name="useimages" value="/markup_narita_20250720" checked>
+            <label for="use_narita_20250720">書込・成田7/20</label>
           </div>
         </div>
         <div id="page">
