@@ -63,14 +63,14 @@ body::-webkit-scrollbar {
     opacity: 0%;
 }
 
-#select_loadimg {
+#select_loadimgs {
     position: relative;
     margin-top: 15px;
 }
 
-input[name = "loadimages"] {
+.select_loadimg {
     position: relative;
-    margin-top: 7px;
+    margin-top: 2px;
 }
 
 .load_eachimagesbtn {
