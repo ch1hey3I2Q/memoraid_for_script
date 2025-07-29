@@ -3,6 +3,7 @@ body {
     font-family: sans-serif;
     -webkit-user-select:none;
     -webkit-touch-callout:none;
+    /* scrollbar-width: none; */
 }
 
 body::-webkit-scrollbar {
@@ -87,13 +88,50 @@ body::-webkit-scrollbar {
 #main {
     position: absolute;
     top: 0%;
-    visibility: hidden;
+    left: 50%;
+    transform: translateX(-50%);
+    /* visibility: hidden; */
+    display: none;
+}
+
+#script {
+    position: relative;
+    overflow-x: auto;
+}
+
+#onehand_uis {
+    position: absolute;
+    background-color: antiquewhite;
+    width: 60px;
+    top: 0%;
+    display: none;
+}
+
+#stick {
+    position: absolute;
+    background-color: rgb(180, 180, 180);
+    margin: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+    aspect-ratio: 1;
+}
+
+#slider {
+    position: absolute;
+    background-color: rgb(180, 180, 180);
+    margin: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#script_area {
+    position: absolute;
+    top: 0%;
 }
 
 #script_img {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    left: 0%;
     /* width: 100%; */
 }
 
@@ -137,4 +175,8 @@ body::-webkit-scrollbar {
 #inputpage {
     transform: translateY(-5%);
     width: 35px;
+}
+
+#right_left {
+    display: none;
 }
