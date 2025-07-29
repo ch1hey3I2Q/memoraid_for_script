@@ -14,7 +14,7 @@ const mag_top = {"朝利":0.121, "利":0.110, "板垣":0.121, "望月":0.121, "�
 const mag_left_offset = 0.1535;
 const mag_left_interval = 0.01953;
 
-const mag_arrowboxes_width = 0.050;
+const mag_uis_width = 0.050;
 
 const class_arrowboxes = document.getElementsByClassName("arrowboxes");
 const class_mask = document.getElementsByClassName("mask");
@@ -23,41 +23,49 @@ const script_img = document.getElementById("script_img");
 let img_width;
 
 
+function pageup () {
+    if (page < 78) {
+        page++;
+        reload();
+    }
+}
+
+function pagedown () {
+    if (page > 0) {
+        page--;
+        reload();
+    }
+}
+
 for (let i = 0; i < class_arrowboxes.length; i++) {
     class_arrowboxes[i].addEventListener('touchend', (e) => {
         e.preventDefault();
-        page += (i * 2 - 1);
-        if (page < 0) {
-            page = 0;
-        } else if (page > 78) {
-            page = 78;
+        if (i == 0) {
+            pagedown();
+        } else {
+            pageup();
         }
-        reload();
     })
     
     class_arrowboxes[i].addEventListener('click', () => {
-        page += (i * 2 - 1);
-        if (page < 0) {
-            page = 0;
-        } else if (page > 78) {
-            page = 78;
+        if (i == 0) {
+            pagedown();
+        } else {
+            pageup();
         }
-        reload();
     })
 }
 
 document.body.addEventListener('keydown', (e) => {
-    if (main.style.visibility == 'visible') {
+    if (main.style.display == 'block') {
         switch (e.code) {
             case 'ArrowRight':
                 e.preventDefault();
-                page = page > 0 ? page - 1 : page;
-                reload(); 
+                pagedown();
                 break;
             case 'ArrowLeft':
                 e.preventDefault();
-                page = page < 78 ? page + 1 : page;
-                reload();
+                pageup();
                 break;
             case 'KeyR':
                 reload();
@@ -80,8 +88,7 @@ document.body.addEventListener('keydown', (e) => {
                     if (class_mask.length > 0) {
                         class_mask[0].remove();
                     } else {
-                        page++;
-                    reload();
+                        pageup();
                     }
                 } else {
                     inputpage.blur();
@@ -90,12 +97,22 @@ document.body.addEventListener('keydown', (e) => {
                 break;
         }
     } else if (e.code == 'Enter') {
-        if (page == 0) {
+        close_tips();
+    }
+})
+
+let clicked = null;
+let downtime;
+let islongclick = false;
+script_img.addEventListener('touchstart', (e) => {
+    downtime = performance.now();
+    clicked = e.target;
+    setTimeout(() => {
+        if (clicked != null && clicked == e.target && performance.now() - downtime >= 500) {
+            islongclick = true;
             reload();
         }
-        tips.style.visibility = 'hidden';
-        main.style.visibility = 'visible';
-    }
+    }, 500);
 })
 
 
@@ -144,6 +161,143 @@ function jump_page () {
     inputpage.blur();
     reload();
 }
+
+
+const onehandbtn = document.getElementById("onehand_mode");
+const right_left = document.getElementById("right_left");
+const onehand_uis = document.getElementById("onehand_uis");
+let isonehandmode = false;
+onehandbtn.addEventListener('click', () => {
+    if (isonehandmode) {
+        isonehandmode = false;
+        onehandbtn.textContent = '片手モード';
+        right_left.style.display = 'none';
+        onehand_uis.style.display = 'none';
+        resize();
+    } else {
+        isonehandmode = true;
+        onehandbtn.textContent = '片手モード解除';
+        right_left.style.display = 'inline-block';
+        onehand_uis.style.display = 'block';
+        resize();
+    }
+})
+
+let onehand_rl = 'right';
+const rlbtn = document.getElementById("right_left");
+rlbtn.addEventListener('click', () => {
+    onehand_rl = onehand_rl == 'right' ? 'left' : 'right';
+    resize();
+})
+
+const stick = document.getElementById("stick");
+stick.addEventListener('touchstart', (e) => {
+    clicked = e.target;
+})
+
+let stick_defaultleft;
+let ismoved = false;
+stick.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (clicked == e.target) {
+        const touch_left = pointer_x - onehand_uis.getBoundingClientRect().left;
+        if (Math.abs(touch_left - stick_defaultleft) <= stick.clientWidth / 2) {
+            stick.style.left = touch_left + 'px';
+        }
+    }
+})
+
+stick.addEventListener('touchend', () => {
+    clicked = null;
+    const move_left = stick.getBoundingClientRect().left + stick.clientWidth / 2 - onehand_uis.getBoundingClientRect().left - stick_defaultleft;
+    if (move_left < stick.clientWidth / 4 * -1) {
+        pageup();
+    } else if (move_left > stick.clientWidth / 4) {
+        pagedown();
+    }
+    stick.style.left = stick_defaultleft + 'px';
+})
+
+const slider = document.getElementById("slider");
+function slider_reset () {
+    if (class_mask.length != 0) {
+        const nextmask = class_mask[0];
+        slider.style.height = nextmask.getBoundingClientRect().height + 'px';
+        slider.style.top = nextmask.getBoundingClientRect().top + window.scrollY + 'px';
+    } else {
+        slider.style.height = img_width * (mag_bottom - mag_top['+人名']) + 'px';
+        slider.style.top = img_width * mag_top['+人名'] + 'px';
+    }
+}
+
+const mask_event = (e) => {
+    e.preventDefault();
+    downtime = performance.now();
+    clicked = e.target;
+    const target = clicked.id == "slider" 
+                ? class_mask.length != 0 
+                    ? class_mask[0] 
+                    : clicked 
+                : clicked;
+    islongclick = false;
+    setTimeout(() => {
+        if (clicked != null && performance.now() - downtime >= 500) {
+            islongclick = true;
+        }
+    }, 500);
+    const down_x = e.type == 'touchstart' ? e.touches[0].pageX : e.pageX;
+    const down_y = e.type == 'touchstart' ? e.touches[0].pageY : e.pageY;
+    pointer_x = e.type == 'touchstart' ? e.touches[0].pageX : e.pageX;
+    pointer_y = e.type == 'touchstart' ? e.touches[0].pageY : e.pageY;
+    if (intervalid == null) {
+        intervalid = setInterval(() => {
+            const row = target.id.replace(/[^0-9]/g, '');
+            const name = maskon["+人名"] == 1 && speaker[page][row] != "改行" 
+                        ? "+人名" 
+                        : speaker[page][row] != undefined 
+                        ? speaker[page][row] 
+                        : "その他";
+            if (islongclick) {
+                if (img_width * mag_top[name] >= pointer_y) {
+                    target.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                    target.style.top = img_width * mag_top[name] + 'px';
+                } else if (img_width * mag_bottom <= pointer_y) {
+                    target.style.height = '0px';
+                } else {
+                    target.style.height = img_width * mag_bottom - pointer_y + 'px';
+                    target.style.top = pointer_y + 'px';
+                }
+                slider.style.height = target.getBoundingClientRect().height + 'px';
+                slider.style.top = target.getBoundingClientRect().top + 'px';
+            }
+            if (clicked == null) {
+                if (islongclick) {
+                    target.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                    target.style.top = img_width * mag_top[name] + 'px';
+                    slider_reset();
+                } else {
+                    islongclick = false;
+                    if (class_mask.length != 0) {
+                        target.remove();
+                    } else {
+                        pageup();
+                    }
+                }
+                clearInterval(intervalid);
+                intervalid = null;
+            }
+            if (pointer_x != down_x || pointer_y != down_y) {
+                islongclick = true;
+            }
+        }, 0);
+    }
+}
+
+slider.addEventListener('touchstart', mask_event);
+slider.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+})
+
 
 const fullscreen = document.getElementById("fullscreen");
 fullscreen.addEventListener('click', () => {
@@ -253,12 +407,9 @@ function resize () {
     const img_height = window_width / window_height <= 1920 / 1200 ? window_width / 1920 * 1200 : window_height;
     script_img.style.width = img_width + 'px';
     script_img.style.height = img_height + 'px';
-    
-    main.style.width = img_width + 'px';
-    main.style.left = (window_width - img_width) / 2 + 'px';
-
+     
     for (let i = 0; i < class_arrowboxes.length; i++) {
-        class_arrowboxes[i].style.width = img_width * mag_arrowboxes_width + 'px';
+        class_arrowboxes[i].style.width = img_width * mag_uis_width + 'px';
         class_arrowboxes[i].style.height = img_height + 'px';
         class_arrowboxes[i].style.top = img_height / 2 + 'px';
         class_arrowboxes[i].style.left = img_width * (-i + 1) + 'px';
@@ -266,15 +417,57 @@ function resize () {
 
     for (let i = 0; i < class_mask.length; i++) {
         const row = class_mask[i].id.replace(/[^0-9]/g, '');
-        const name = maskon["+人名"] == 1 && speaker[page][row] != "改行" ? "+人名" : speaker[page][row];
+        const name = maskon["+人名"] == 1 && speaker[page][row] != "改行" 
+                    ? "+人名" 
+                    : speaker[page][row] != undefined 
+                    ? speaker[page][row] 
+                    : "その他";
         class_mask[i].style.width = img_width * mag_width + 'px';
         class_mask[i].style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
         class_mask[i].style.top = img_width * mag_top[name] + 'px';
         class_mask[i].style.left = img_width * mag_left_offset + img_width * mag_left_interval * (35 - row) + 'px';
     }
 
-    const options = document.getElementById("options");
-    options.style.top = img_height + 'px';
+    main.style.width = img_width + 'px';
+    main.style.height = document.documentElement.scrollHeight + 'px';
+
+    // const options = document.getElementById("options");
+    // options.style.top = img_height + 'px';
+
+    onehand_uis.style.width = img_width * mag_uis_width * 2 + 'px';
+    onehand_uis.style.height = img_height + 'px';
+    onehand_uis.style.left = img_width + 'px';
+
+    const stick_width = img_width * mag_uis_width;
+    stick.style.width = stick_width + 'px';
+    stick.style.top = img_width * mag_uis_width * 0.5 + 'px';
+    stick_defaultleft = stick.getBoundingClientRect().left - onehand_uis.getBoundingClientRect().left + stick_width / 2;
+
+    slider.style.width = stick_width + 'px';
+    slider_reset();
+
+    const script_scroll = document.getElementById("script_scroll");
+    script_scroll.style.width = isonehandmode ? img_width + onehand_uis.clientWidth + 'px' : img_width + 'px';
+    script_scroll.style.height = img_height + 'px';
+
+    const script = document.getElementById("script");
+    if (isonehandmode) {
+        script.style.width = window_width > script_scroll.clientWidth ? script_scroll.clientWidth + 'px' : window_width + 'px';
+    } else if (script_scroll.clientWidth != 0) {
+        script.style.width = script_scroll.clientWidth + 'px';
+    }
+    if (script_scroll.clientWidth != 0) {
+        script.style.left = (img_width - script.clientWidth) / 2 + 'px';
+    }
+
+    const script_area = document.getElementById("script_area");
+    if (onehand_rl == 'right') {
+        script_area.style.left = '0px';
+        onehand_uis.style.left = img_width + 'px';
+    } else {
+        script_area.style.left = onehand_uis.clientWidth + 'px';
+        onehand_uis.style.left = '0px';
+    }
 }
 
 
@@ -282,23 +475,20 @@ let pointer_x;
 let pointer_y;
 
 window.addEventListener('touchmove', (e) => {
-    if (mask_clicked != null) {
+    if (clicked != null) {
         pointer_x = e.touches[0].pageX;
         pointer_y = e.touches[0].pageY;
     }
 })
 
 window.addEventListener('mousemove', (e) => {
-    if (mask_clicked != null) {
+    if (clicked != null) {
         pointer_x = e.pageX;
         pointer_y = e.pageY;
     }
 })
 
 
-let mask_clicked = null;
-let downtime;
-let islongclick = false;
 let intervalid = null;
 function addmask (row) {
     const masks = document.getElementById("masks");
@@ -307,125 +497,55 @@ function addmask (row) {
     p.id = p_id;
     p.className = "mask";
 
-    const name = maskon["+人名"] == 1 && speaker[page][row] != "改行" ? "+人名" : speaker[page][row] != undefined ? speaker[page][row] : "その他";
+    const name = maskon["+人名"] == 1 && speaker[page][row] != "改行" 
+                ? "+人名" 
+                : speaker[page][row] != undefined 
+                ? speaker[page][row] 
+                : "その他";
     p.style.width = img_width * mag_width + 'px';
     p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
     p.style.top = img_width * mag_top[name] + 'px';
     p.style.left = img_width * mag_left_offset + img_width * mag_left_interval * (35 - row) + 'px';
     
-    p.addEventListener('touchstart', (e) => {
+    p.addEventListener('touchstart', mask_event);
+    p.addEventListener('mousedown', mask_event);
+    p.addEventListener('touchmove', (e) => {
         e.preventDefault();
-        downtime = performance.now();
-        mask_clicked = e.target;
-        setTimeout(() => {
-            if (mask_clicked != null && mask_clicked == e.target && performance.now() - downtime >= 500) {
-                islongclick = true;
-            }
-        }, 500);
-        const down_x = e.touches[0].pageX;
-        const down_y = e.touches[0].pageY;
-        pointer_x = e.touches[0].pageX;
-        pointer_y = e.touches[0].pageY;
-        if (intervalid == null) {
-            intervalid = setInterval(() => {
-                if (islongclick || pointer_x != down_x || pointer_y != down_y) {
-                    if (img_width * mag_top[name] >= pointer_y) {
-                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                        p.style.top = img_width * mag_top[name] + 'px';
-                    } else if (img_width * mag_bottom <= pointer_y) {
-                        p.style.height = '0px';
-                    } else {
-                        p.style.height = img_width * mag_bottom - pointer_y + 'px';
-                        p.style.top = pointer_y + 'px';
-                    }
-                }
-                if (mask_clicked == null) {
-                    if (islongclick) {
-                        islongclick = false;
-                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                        p.style.top = img_width * mag_top[name] + 'px';
-                    } else {
-                        p.remove();
-                    }
-                    clearInterval(intervalid);
-                    intervalid = null;
-                }
-            }, 0);
-        }
-    })
-
-    p.addEventListener('mousedown', (e) => {
-        downtime = performance.now();
-        mask_clicked = e.target;
-        setTimeout(() => {
-            if (mask_clicked != null && mask_clicked == e.target && performance.now() - downtime >= 500) {
-                islongclick = true;
-            }
-        }, 500);
-        const down_x = e.pageX;
-        const down_y = e.pageY;
-        pointer_x = e.pageX;
-        pointer_y = e.pageY;
-        if (intervalid == null) {
-            intervalid = setInterval(() => {
-                if (islongclick || pointer_x != down_x || pointer_y != down_y) {
-                    if (img_width * mag_top[name] >= pointer_y) {
-                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                        p.style.top = img_width * mag_top[name] + 'px';
-                    } else if (img_width * mag_bottom <= pointer_y) {
-                        p.style.height = '0px';
-                    } else {
-                        p.style.height = img_width * mag_bottom - pointer_y + 'px';
-                        p.style.top = pointer_y + 'px';
-                    }
-                }
-                if (mask_clicked == null) {
-                    if (islongclick) {
-                        islongclick = false;
-                        p.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                        p.style.top = img_width * mag_top[name] + 'px';
-                    } else {
-                        p.remove();
-                    }
-                    clearInterval(intervalid);
-                    intervalid = null;
-                }
-            }, 0);
-        }
     })
 
     masks.appendChild(p);    
 }
 
-window.addEventListener('touchend', (e) => {
-    if (mask_clicked != null) {
-        mask_clicked = null;
+const clickend = () => {
+    if (clicked != null) {
+        clicked = null;
     }
-})
+    pointer_x = null;
+    pointer_y = null;
+}
 
-window.addEventListener('mouseup', () => {
-    if (mask_clicked != null) {
-        mask_clicked = null;
-    }
-})
+window.addEventListener('touchend', clickend);
+window.addEventListener('mouseup', clickend);
 
 
 const main = document.getElementById("main");
 const tips = document.getElementById("tips");
+let pagescroll = 0;
+
+function close_tips () {
+    tips.style.display = 'none';
+    main.style.display = 'block';
+    window.scroll({top: pagescroll});
+}
 
 const close_tipsbtn = document.getElementById("close_tips");
-close_tipsbtn.addEventListener('click', () => {
-    if (page == 0) {
-        reload();
-    }
-    tips.style.visibility = 'hidden';
-    main.style.visibility = 'visible';
-})
+close_tipsbtn.addEventListener('click', close_tips);
 
 const open_tipsbtn = document.getElementById("open_tips");
 open_tipsbtn.addEventListener('click', () => {
-    main.style.visibility = 'hidden';
-    tips.style.visibility = 'visible';
+    pagescroll = window.scrollY;
+    main.style.display = 'none';
+    tips.style.display = 'block';
     window.scroll({top: 0});
 })
 
@@ -563,8 +683,11 @@ for (let i = 0; i < class_load_imgbtn.length; i++) {
 }
 
 
-imagechange();
-resize();
+window.addEventListener('load', () => {
+    imagechange();
+    reload();
+    resize();
+})
 
 
 const speaker = [
