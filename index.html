@@ -19,6 +19,7 @@
         <p class="tip">・マスクをクリックしながら上下にスライドすると、一部分だけ表示できます。</p>
         <p class="tip">・PCではEnterで次の行を表示、隠された行がなければ次のページへ移動できます。</p>
         <p class="tip">・PCではRキーでそのページのマスクをリセット(再表示)できます。</p>
+        <p class="tip">・片手モードを追加しました。操作方法は後ほど記載しますのでお待ちください。</p>
         <p class="tip">・ページ下部の「全画面」で全画面表示ができます(横画面推奨,試験的実装,バグあり)。</p>
         <p class="tip">・ページ最下部の「使い方」からこのページを確認できます。</p>
         <button id="close_tips">閉じる</button>
@@ -66,16 +67,26 @@
       </div>
     </div>
     <div id="main">
-      <img id="script_img">
-      <div>
-        <div id="arrowright" class="arrowboxes">
-          <span class="arrows">&gt;</span>
+      <div id="script">
+        <div id="script_scroll">
+          <div id="onehand_uis">
+            <p id="stick"></p>
+            <p id="slider"></p>
+          </div>
+          <div id="script_area">
+            <img id="script_img">
+            <div>5
+              <div id="arrowright" class="arrowboxes">
+                <span class="arrows">&gt;</span>
+              </div>
+              <div id="arrowleft" class="arrowboxes">
+                <span class="arrows">&lt;</span>
+              </div>
+            </div>
+            <div id="masks">
+            </div>
+          </div>
         </div>
-        <div id="arrowleft" class="arrowboxes">
-          <span class="arrows">&lt;</span>
-        </div>
-      </div>
-      <div id="masks">
       </div>
       <div id="options">
         <div id="who">
@@ -141,6 +152,10 @@
           <div>
             <input type="number" inputmode="numeric" id="inputpage" name="inputpage" max="78" min="0" value="0">
           </div>
+        </div>
+        <div id="onehand_btns">
+          <button id="onehand_mode">片手モード</button>
+          <button id="right_left">左右切り替え</button>
         </div>
         <div>
           <button id="fullscreen">全画面</button>
