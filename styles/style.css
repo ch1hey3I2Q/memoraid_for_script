@@ -101,7 +101,7 @@ body::-webkit-scrollbar {
 
 #onehand_uis {
     position: absolute;
-    background-color: antiquewhite;
+    /* background-color: antiquewhite; */
     width: 60px;
     top: 0%;
     display: none;
