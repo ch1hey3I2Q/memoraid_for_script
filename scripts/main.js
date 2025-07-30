@@ -187,6 +187,7 @@ let onehand_rl = 'right';
 const rlbtn = document.getElementById("right_left");
 rlbtn.addEventListener('click', () => {
     onehand_rl = onehand_rl == 'right' ? 'left' : 'right';
+    rlbtn.textContent = onehand_rl == 'right' ? '切り替え:左' : '切り替え:右';
     resize();
 })
 
@@ -196,12 +197,17 @@ stick.addEventListener('touchstart', (e) => {
 })
 
 let stick_defaultleft;
-let ismoved = false;
 stick.addEventListener('touchmove', (e) => {
     e.preventDefault();
     if (clicked == e.target) {
         const touch_left = pointer_x - onehand_uis.getBoundingClientRect().left;
-        if (Math.abs(touch_left - stick_defaultleft) <= stick.clientWidth / 2) {
+        const max_left = stick_defaultleft + stick.clientWidth / 2;
+        const min_left = stick_defaultleft - stick.clientWidth / 2;
+        if (touch_left > max_left) {
+            stick.style.left = max_left + 'px';
+        } else if (touch_left < min_left) {
+            stick.style.left = min_left + 'px';
+        } else {
             stick.style.left = touch_left + 'px';
         }
     }
@@ -257,24 +263,28 @@ const mask_event = (e) => {
                         : speaker[page][row] != undefined 
                         ? speaker[page][row] 
                         : "その他";
-            if (islongclick) {
-                if (img_width * mag_top[name] >= pointer_y) {
-                    target.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
-                    target.style.top = img_width * mag_top[name] + 'px';
-                } else if (img_width * mag_bottom <= pointer_y) {
-                    target.style.height = '0px';
-                } else {
-                    target.style.height = img_width * mag_bottom - pointer_y + 'px';
-                    target.style.top = pointer_y + 'px';
+            if (clicked != null) {
+                if (islongclick) {
+                    if (img_width * mag_top[name] >= pointer_y) {
+                        target.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
+                        target.style.top = img_width * mag_top[name] + 'px';
+                    } else if (img_width * mag_bottom <= pointer_y) {
+                        target.style.height = '0px';
+                    } else {
+                        target.style.height = img_width * mag_bottom - pointer_y + 'px';
+                        target.style.top = pointer_y + 'px';
+                    }
+                    if (clicked.id == 'slider') {
+                        slider.style.height = target.getBoundingClientRect().height + 'px';
+                        slider.style.top = target.getBoundingClientRect().top + 'px';
+                    }
+                } else if (pointer_x != down_x || pointer_y != down_y) {
+                    islongclick = true;
                 }
-                slider.style.height = target.getBoundingClientRect().height + 'px';
-                slider.style.top = target.getBoundingClientRect().top + 'px';
-            }
-            if (clicked == null) {
+            } else {
                 if (islongclick) {
                     target.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
                     target.style.top = img_width * mag_top[name] + 'px';
-                    slider_reset();
                 } else {
                     islongclick = false;
                     if (class_mask.length != 0) {
@@ -285,9 +295,7 @@ const mask_event = (e) => {
                 }
                 clearInterval(intervalid);
                 intervalid = null;
-            }
-            if (pointer_x != down_x || pointer_y != down_y) {
-                islongclick = true;
+                slider_reset();                
             }
         }, 0);
     }
@@ -385,6 +393,10 @@ function reload () {
         }
     }
 
+    if (isonehandmode) {
+        slider_reset();
+    }
+
     imagereload(images_folder_path, page);
     inputpage.value = page;
 }
@@ -441,6 +453,7 @@ function resize () {
     const stick_width = img_width * mag_uis_width;
     stick.style.width = stick_width + 'px';
     stick.style.top = img_width * mag_uis_width * 0.5 + 'px';
+    stick.style.left = '50%';
     stick_defaultleft = stick.getBoundingClientRect().left - onehand_uis.getBoundingClientRect().left + stick_width / 2;
 
     slider.style.width = stick_width + 'px';
@@ -535,6 +548,7 @@ let pagescroll = 0;
 function close_tips () {
     tips.style.display = 'none';
     main.style.display = 'block';
+    resize();
     window.scroll({top: pagescroll});
 }
 
