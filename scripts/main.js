@@ -106,7 +106,7 @@ let downtime;
 let islongclick = false;
 script_img.addEventListener('touchstart', (e) => {
     downtime = performance.now();
-    clicked = e.target;
+    // clicked = e.target;
     setTimeout(() => {
         if (clicked != null && clicked == e.target && performance.now() - downtime >= 500) {
             islongclick = true;
@@ -191,30 +191,46 @@ rlbtn.addEventListener('click', () => {
     resize();
 })
 
+let isreloaded = false;
+let ismoved = false;
 const stick = document.getElementById("stick");
 stick.addEventListener('touchstart', (e) => {
-    clicked = e.target;
+    // clicked = e.target;
+    setTimeout(() => {
+        if (clicked != null && performance.now() - downtime >= 500) {
+            islongclick = true;
+            if (!ismoved && class_mask.length != 0) {
+                reload();
+                isreloaded = true;
+            }
+        }
+    }, 500);
 })
 
 let stick_defaultleft;
 stick.addEventListener('touchmove', (e) => {
     e.preventDefault();
-    if (clicked == e.target) {
-        const touch_left = pointer_x - onehand_uis.getBoundingClientRect().left;
-        const max_left = stick_defaultleft + stick.clientWidth / 2;
-        const min_left = stick_defaultleft - stick.clientWidth / 2;
-        if (touch_left > max_left) {
-            stick.style.left = max_left + 'px';
-        } else if (touch_left < min_left) {
-            stick.style.left = min_left + 'px';
-        } else {
-            stick.style.left = touch_left + 'px';
+    if (!isreloaded) {
+        if (!ismoved) {
+            ismoved = true;
+        }
+        if (clicked == e.target) {
+            const touch_left = pointer_x - onehand_uis.getBoundingClientRect().left;
+            const max_left = stick_defaultleft + stick.clientWidth / 2;
+            const min_left = stick_defaultleft - stick.clientWidth / 2;
+            if (touch_left > max_left) {
+                stick.style.left = max_left + 'px';
+            } else if (touch_left < min_left) {
+                stick.style.left = min_left + 'px';
+            } else {
+                stick.style.left = touch_left + 'px';
+            }
         }
     }
 })
 
 stick.addEventListener('touchend', () => {
-    clicked = null;
+    // clicked = null;
     const move_left = stick.getBoundingClientRect().left + stick.clientWidth / 2 - onehand_uis.getBoundingClientRect().left - stick_defaultleft;
     if (move_left < stick.clientWidth / 4 * -1) {
         pageup();
@@ -222,6 +238,9 @@ stick.addEventListener('touchend', () => {
         pagedown();
     }
     stick.style.left = stick_defaultleft + 'px';
+    islongclick = false;
+    ismoved = false;
+    isreloaded = false;
 })
 
 const slider = document.getElementById("slider");
@@ -239,7 +258,7 @@ function slider_reset () {
 const mask_event = (e) => {
     e.preventDefault();
     downtime = performance.now();
-    clicked = e.target;
+    clicked = e.target; //処理間に合わないので応急処置的に
     const target = clicked.id == "slider" 
                 ? class_mask.length != 0 
                     ? class_mask[0] 
@@ -484,24 +503,6 @@ function resize () {
 }
 
 
-let pointer_x;
-let pointer_y;
-
-window.addEventListener('touchmove', (e) => {
-    if (clicked != null) {
-        pointer_x = e.touches[0].pageX;
-        pointer_y = e.touches[0].pageY;
-    }
-})
-
-window.addEventListener('mousemove', (e) => {
-    if (clicked != null) {
-        pointer_x = e.pageX;
-        pointer_y = e.pageY;
-    }
-})
-
-
 let intervalid = null;
 function addmask (row) {
     const masks = document.getElementById("masks");
@@ -529,6 +530,13 @@ function addmask (row) {
     masks.appendChild(p);    
 }
 
+
+const clickstart = (e) => {
+    if (clicked == null) {
+        clicked = e.target;
+    }
+}
+
 const clickend = () => {
     if (clicked != null) {
         clicked = null;
@@ -537,8 +545,27 @@ const clickend = () => {
     pointer_y = null;
 }
 
+window.addEventListener('touchstart', clickstart);
+window.addEventListener('mousedown', clickstart);
 window.addEventListener('touchend', clickend);
 window.addEventListener('mouseup', clickend);
+
+let pointer_x;
+let pointer_y;
+
+window.addEventListener('touchmove', (e) => {
+    if (clicked != null) {
+        pointer_x = e.touches[0].pageX;
+        pointer_y = e.touches[0].pageY;
+    }
+})
+
+window.addEventListener('mousemove', (e) => {
+    if (clicked != null) {
+        pointer_x = e.pageX;
+        pointer_y = e.pageY;
+    }
+})
 
 
 const main = document.getElementById("main");
@@ -586,10 +613,10 @@ function loadimg_befor (i, j, images) {
 function loadimg_after (i, j, images) {
     denom = images == 'load_all' ? denominator : 79;
     if (processed_count == 0) {
-        percent.textContent = parseInt((79 * i + (j + 1)) / denom * 80) + '%';
+        percent.textContent = parseInt((79 * i + (j + 1)) / denom * 90) + '%';
     } else if (processed_count < min_count[images]) {
         // percent.textContent = parseInt((79 * i + (j + 1) + denominator * processed_count) / (denominator * min_count) * 99) + '%';
-        percent.textContent = parseInt((79 * i + (j + 1) + denom * (processed_count - 1)) / (denom * (min_count[images] - 1)) * 19 + 80) + '%';
+        percent.textContent = parseInt((79 * i + (j + 1) + denom * (processed_count - 1)) / (denom * (min_count[images] - 1)) * 9 + 90) + '%';
     }
 
     j++;
