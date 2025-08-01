@@ -101,7 +101,7 @@ body::-webkit-scrollbar {
 
 #onehand_uis {
     position: absolute;
-    /* background-color: antiquewhite; */
+    background-color: white;
     width: 60px;
     top: 0%;
     display: none;
@@ -109,7 +109,8 @@ body::-webkit-scrollbar {
 
 #stick {
     position: absolute;
-    background-color: rgb(180, 180, 180);
+    /* background-color: rgb(180, 180, 180); */
+    background-color: black;
     margin: 0%;
     left: 50%;
     transform: translateX(-50%);
@@ -118,7 +119,8 @@ body::-webkit-scrollbar {
 
 #slider {
     position: absolute;
-    background-color: rgb(180, 180, 180);
+    /* background-color: rgb(180, 180, 180); */
+    background-color: black;
     margin: 0%;
     left: 50%;
     transform: translateX(-50%);
