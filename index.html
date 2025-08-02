@@ -11,20 +11,38 @@
     <div id="tips">
       <div>
         <p id="tipstitle">使い方</p>
-        <p class="tip">・左右の&lt;&gt;ボタン、もしくは矢印キーでページを移動できます。</p>
-        <p class="tip">・ページ下部「ページ」のテキストボックスで指定のページに移動できます。</p>
-        <p class="tip">・ページ下部の「セリフ隠す人物」のチェックボックスでセリフを隠す人を選べます。</p>
-        <p class="tip">・「+人名」は誰のセリフかを追加で隠します。「その他」はセリフ以外のすべてを隠します。</p>
-        <p class="tip">・マスクをクリックするとその行を表示します。</p>
-        <p class="tip">・マスクをクリックしながら上下にスライドすると、一部分だけ表示できます。</p>
-        <p class="tip">・PCではEnterで次の行を表示、隠された行がなければ次のページへ移動できます。</p>
-        <p class="tip">・PCではRキーでそのページのマスクをリセット(再表示)できます。</p>
-        <p class="tip">・片手モードを追加しました。操作方法は後ほど記載しますのでお待ちください。</p>
-        <p class="tip">・ページ下部の「全画面」で全画面表示ができます(横画面推奨,試験的実装,バグあり)。</p>
-        <p class="tip">・ページ最下部の「使い方」からこのページを確認できます。</p>
-        <button id="close_tips">閉じる</button>
+        <button id="tipschange">PC用操作説明を見る</button>
+        <div id="for_mobile">
+          <p class="tip">・左右の&lt;&gt;ボタンでページを移動できます。</p>
+          <p class="tip">・ページ下部「ページ」のテキストボックスで指定のページに移動できます。</p>
+          <p class="tip">・ページ下部の「セリフ隠す人物」のチェックボックスでセリフを隠す人を選べます。</p>
+          <p class="tip">・「+人名」は誰のセリフかを追加で隠します。「その他」はセリフ以外のすべてを隠します。</p>
+          <p class="tip">・マスクをタップするとその行を表示します。</p>
+          <p class="tip">・マスクをタップしながら上下にスライドすると上部だけを表示できます。</p>
+          <p class="tip">・台本画像を長押しするとそのページのマスクをリセット(再表示)できます。</p>
+          <p class="tip">・ページ下部の「片手モード」で片手用UIを表示できます。「切り替え」で表示位置を左右入れ替えられます。</p>
+          <p class="tip">・片手用UIの上の四角形を長押しでマスクのリセット(再表示)、左右にスライドして離すとページ移動ができます。</p>
+          <p class="tip">・片手用UIの下の四角形への操作(タップ、上下スライド)はそのまま一番右に表示中のマスクに反映されます。</p>
+          <p class="tip">・表示されているマスクがない状態で片手用UIの下の四角形をタップすると次のページへ移動できます。</p>
+          <p class="tip">・ページ下部の「全画面」で全画面表示ができます(横画面推奨,試験的実装,バグあり)。</p>
+          <p class="tip">・ページ最下部の「使い方」からこのページを確認できます。</p>
+        </div>
+        <div id="for_pc">
+          <p class="tip">・左右の&lt;&gt;ボタン、もしくは矢印キーでページを移動できます。</p>
+          <p class="tip">・ページ下部「ページ」のテキストボックスで指定のページに移動できます。</p>
+          <p class="tip">・ページ下部の「セリフ隠す人物」のチェックボックスでセリフを隠す人を選べます。</p>
+          <p class="tip">・「+人名」は誰のセリフかを追加で隠します。「その他」はセリフ以外のすべてを隠します。</p>
+          <p class="tip">・マスクをクリックするとその行を表示します。</p>
+          <p class="tip">・マスクをクリックしながら上下にスライドすると上部だけを表示できます。</p>
+          <p class="tip">・台本画像を長押し、もしくはRキーでそのページのマスクをリセット(再表示)できます。</p>
+          <p class="tip">・Enterで次の行を表示、隠された行がなければ次のページへ移動できます。</p>
+          <p class="tip">・ページ下部に「片手モード」ボタンがありますが、片手モードはマウスポインターでは操作できません。</p>
+          <p class="tip">・ページ下部の「全画面」で全画面表示ができます(横画面推奨,試験的実装,バグあり)。</p>
+          <p class="tip">・ページ最下部の「使い方」からこのページを確認できます。</p>
+        </div>
+          <button id="close_tips">閉じる</button>
       </div>
-      <div id="loadimages">
+        <div id="loadimages">
         <p class="tip_load">事前に画像を読み込んでおくことで、初回表示時の遅延を軽減できます。</p>
         <p class="tip_load">事前に読み込みをしなくても通常通り使えます。</p>
         <p class="tip_load">この「使い方」を閉じても読み込みは進行します。</p>
@@ -62,6 +80,15 @@
             <span id="isloaded_load_narita_20250720" class="isloaded">未</span>
             <span id="current_i_load_narita_20250720" class="current_value"></span>
             <span id="current_j_load_narita_20250720" class="current_value"></span>
+          </div>
+          <div class="select_loadimg">
+            <input type="checkbox" id="load_hasegawa_20250802" name="loadimages" value="/markup_hasegawa_20250802">
+            <label for="load_hasegawa_20250802">書込・長谷川8/2</label>
+            <button id="load_hasegawa_20250802btn" class="load_imagesbtn load_eachimagesbtn">読み込み</button>
+            <span id="progress_load_hasegawa_20250802" class="progress eachprogress"><span id="percent_load_hasegawa_20250802"></span>　<span id="completion_load_hasegawa_20250802">　読み込み中</span></span>
+            <span id="isloaded_load_hasegawa_20250802" class="isloaded">未</span>
+            <span id="current_i_load_hasegawa_20250802" class="current_value"></span>
+            <span id="current_j_load_hasegawa_20250802" class="current_value"></span>
           </div>
         </div>
       </div>
@@ -145,6 +172,10 @@
           <div>
             <input type="radio" id="use_narita_20250720" name="useimages" value="/markup_narita_20250720" checked>
             <label for="use_narita_20250720">書込・成田7/20</label>
+          </div>
+          <div>
+            <input type="radio" id="use_hasegawa_20250802" name="useimages" value="/markup_hasegawa_20250802" checked>
+            <label for="use_hasegawa_20250802">書込・長谷川8/2</label>
           </div>
         </div>
         <div id="page">
