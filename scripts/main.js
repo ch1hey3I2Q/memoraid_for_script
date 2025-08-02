@@ -87,6 +87,7 @@ document.body.addEventListener('keydown', (e) => {
                 if (document.activeElement.id != "inputpage") {
                     if (class_mask.length > 0) {
                         class_mask[0].remove();
+                        isafter_reload = false;
                     } else {
                         pageup();
                     }
@@ -183,28 +184,31 @@ onehandbtn.addEventListener('click', () => {
     }
 })
 
-let onehand_rl = 'right';
+let or_onehand_rl = 'right';
 const rlbtn = document.getElementById("right_left");
 rlbtn.addEventListener('click', () => {
-    onehand_rl = onehand_rl == 'right' ? 'left' : 'right';
-    rlbtn.textContent = onehand_rl == 'right' ? '切り替え:左' : '切り替え:右';
+    or_onehand_rl = or_onehand_rl == 'right' ? 'left' : 'right';
+    rlbtn.textContent = or_onehand_rl == 'right' ? '切り替え:左' : '切り替え:右';
     resize();
 })
 
 let isreloaded = false;
 let ismoved = false;
+let isafter_reload = false;
 const stick = document.getElementById("stick");
 stick.addEventListener('touchstart', (e) => {
     // clicked = e.target;
-    setTimeout(() => {
-        if (clicked != null && performance.now() - downtime >= 500) {
-            islongclick = true;
-            if (!ismoved && class_mask.length != 0) {
-                reload();
-                isreloaded = true;
+    if (!isafter_reload) {
+        setTimeout(() => {
+            if (clicked != null && performance.now() - downtime >= 500) {
+                islongclick = true;
+                if (!ismoved) {
+                    reload();
+                    isreloaded = true;
+                }
             }
-        }
-    }, 500);
+        }, 500);
+    }
 })
 
 let stick_defaultleft;
@@ -215,15 +219,17 @@ stick.addEventListener('touchmove', (e) => {
             ismoved = true;
         }
         if (clicked == e.target) {
-            const touch_left = pointer_x - onehand_uis.getBoundingClientRect().left;
-            const max_left = stick_defaultleft + stick.clientWidth / 2;
-            const min_left = stick_defaultleft - stick.clientWidth / 2;
-            if (touch_left > max_left) {
-                stick.style.left = max_left + 'px';
-            } else if (touch_left < min_left) {
-                stick.style.left = min_left + 'px';
-            } else {
-                stick.style.left = touch_left + 'px';
+            if (pointer_x != null) {
+                const touch_left = pointer_x - onehand_uis.getBoundingClientRect().left;
+                const max_left = stick_defaultleft + stick.clientWidth / 2;
+                const min_left = stick_defaultleft - stick.clientWidth / 2;
+                if (touch_left > max_left) {
+                    stick.style.left = max_left + 'px';
+                } else if (touch_left < min_left) {
+                    stick.style.left = min_left + 'px';
+                } else {
+                    stick.style.left = touch_left + 'px';
+                }
             }
         }
     }
@@ -308,6 +314,7 @@ const mask_event = (e) => {
                     islongclick = false;
                     if (class_mask.length != 0) {
                         target.remove();
+                        isafter_reload = false;
                     } else {
                         pageup();
                     }
@@ -418,6 +425,8 @@ function reload () {
 
     imagereload(images_folder_path, page);
     inputpage.value = page;
+
+    isafter_reload = true;
 }
 
 window.addEventListener('resize', () => {
@@ -493,7 +502,7 @@ function resize () {
     }
 
     const script_area = document.getElementById("script_area");
-    if (onehand_rl == 'right') {
+    if (or_onehand_rl == 'right') {
         script_area.style.left = '0px';
         onehand_uis.style.left = img_width + 'px';
     } else {
@@ -567,6 +576,25 @@ window.addEventListener('mousemove', (e) => {
     }
 })
 
+
+const tips_for_mobile = document.getElementById("for_mobile");
+const tips_for_pc = document.getElementById("for_pc");
+let or_tips_mobile_pc = 'mobile';
+
+const tipschange = document.getElementById("tipschange");
+tipschange.addEventListener('click', (e) => {
+    if (or_tips_mobile_pc == 'mobile') {
+        or_tips_mobile_pc = 'pc';
+        tips_for_mobile.style.display = 'none';
+        tips_for_pc.style.display = 'block';
+        e.target.textContent = 'スマホ用操作説明を見る';
+    } else{
+        or_tips_mobile_pc = 'mobile';
+        tips_for_pc.style.display = 'none';
+        tips_for_mobile.style.display = 'block';
+        e.target.textContent = 'PC用操作説明を見る';
+    }
+})
 
 const main = document.getElementById("main");
 const tips = document.getElementById("tips");
@@ -671,11 +699,11 @@ for (let i = 0; i < loadimages.length; i++) {
     })
 }
 
-const min_count = {'load_all':2, "load_original":2, "load_narita_20250718":2, "load_narita_20250720":2};
+const min_count = {'load_all':2, "load_original":2, "load_narita_20250718":2, "load_narita_20250720":2, "load_hasegawa_20250802":2};
 let processed_count = 0;
 let denominator;
 
-const imgloading  = {'any':0, 'load_all':0, "load_original":0, "load_narita_20250718":0, "load_narita_20250720":0};
+const imgloading  = {'any':0, 'load_all':0, "load_original":0, "load_narita_20250718":0, "load_narita_20250720":0, "load_hasegawa_20250802":0};
 let current_i;
 let current_j;
 let progress;
