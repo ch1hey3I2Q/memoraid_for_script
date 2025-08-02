@@ -31,6 +31,10 @@ body::-webkit-scrollbar {
     margin: 0%;
 }
 
+#for_pc {
+    display: none;
+}
+
 #close_tips {
     position: relative;
     margin-top: 20px;
