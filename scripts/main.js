@@ -3,8 +3,8 @@ let page = 0;
 const allimages_folder_path = './images/compressed';
 let images_folder_path;
 
-const maskon = {"朝利":0, "板垣":0, "望月":0, "池谷":0, "生島":0, "横内":0, "ゆうき":0, "祐子":0, "+人名":0, "その他":0};
-const idToname = {"asari":"朝利", "itagaki":"板垣", "mochiduki":"望月", "iketani":"池谷", "kijima":"生島", "yokouchi":"横内", "yuuki":"ゆうき", "yuuko":"祐子", "name":"+人名", "others":"その他"};
+const maskon = {"朝利":0, "板垣":0, "望月":0, "池谷":0, "生島":0, "横内":0, "ゆうき":0, "祐子":0, "+人名":0, "その他":0, "セリフ後":0};
+const idToname = {"asari":"朝利", "itagaki":"板垣", "mochiduki":"望月", "iketani":"池谷", "kijima":"生島", "yokouchi":"横内", "yuuki":"ゆうき", "yuuko":"祐子", "name":"+人名", "others":"その他", "after":"セリフ後"};
 
 const exception = {"朝利・板垣":["朝利", "板垣"], "朝利・望月":["朝利", "望月"], "板垣・望月":["板垣", "望月"], "朝利・板垣・望月":["朝利", "板垣", "望月"], "板垣・池谷":["板垣", "池谷"], "利":["朝利"]};
 
@@ -40,24 +40,41 @@ function pagedown () {
 for (let i = 0; i < class_arrowboxes.length; i++) {
     class_arrowboxes[i].addEventListener('touchend', (e) => {
         e.preventDefault();
-        if (i == 0) {
+        if (i === 0) {
             pagedown();
         } else {
             pageup();
         }
-    })
+    });
     
     class_arrowboxes[i].addEventListener('click', () => {
-        if (i == 0) {
+        if (i === 0) {
             pagedown();
         } else {
             pageup();
         }
-    })
+    });
+}
+
+function mask_remove (index) {
+    if (class_mask.length > 0) {
+        while (index > 0 && class_mask[index].id.split('_')[1] === 'after') {
+            if(class_mask[index - 1].id.split('_')[1] !== 'after') {
+                break;
+            }
+            index--;
+        }
+        do {
+            class_mask[index].remove();
+        } while (class_mask[index] !== undefined && class_mask[index].id.split('_')[1] === 'after');
+        isafter_reload = false;
+    } else {
+        pageup();
+    }
 }
 
 document.body.addEventListener('keydown', (e) => {
-    if (main.style.display == 'block') {
+    if (main.style.display === 'block') {
         switch (e.code) {
             case 'ArrowRight':
                 e.preventDefault();
@@ -70,6 +87,29 @@ document.body.addEventListener('keydown', (e) => {
             case 'KeyR':
                 reload();
                 break;
+            case 'Numpad4':
+                if (!e.getModifierState("NumLock")) {
+                    e.preventDefault();
+                    pageup();
+                    break;    
+                }
+            case 'Numpad6':
+                if (!e.getModifierState("NumLock")) {
+                    e.preventDefault();
+                    pagedown();
+                    break;    
+                }
+            case 'Numpad1':
+            case 'Numpad2':
+            case 'Numpad3':
+            case 'Numpad5':
+            case 'Numpad7':
+            case 'Numpad8':
+            case 'Numpad9':
+            case 'Numpad0':
+                if (!e.getModifierState("NumLock")) {
+                    break;    
+                }
             case 'Digit1':
             case 'Digit2':
             case 'Digit3':
@@ -82,25 +122,21 @@ document.body.addEventListener('keydown', (e) => {
             case 'Digit0':
                 inputpage.focus();
                 break;
+            case 'NumpadEnter':
             case 'Enter':
                 e.preventDefault();
-                if (document.activeElement.id != "inputpage") {
-                    if (class_mask.length > 0) {
-                        class_mask[0].remove();
-                        isafter_reload = false;
-                    } else {
-                        pageup();
-                    }
+                if (document.activeElement.id !== "inputpage") {
+                    mask_remove(0);
                 } else {
                     inputpage.blur();
                     window.scroll({top: 0});
                 }
                 break;
         }
-    } else if (e.code == 'Enter') {
+    } else if (e.code === 'Enter' || 'NumpadEnter') {
         close_tips();
     }
-})
+});
 
 let clicked = null;
 let downtime;
@@ -109,12 +145,12 @@ script_img.addEventListener('touchstart', (e) => {
     downtime = performance.now();
     // clicked = e.target;
     setTimeout(() => {
-        if (clicked != null && clicked == e.target && performance.now() - downtime >= 500) {
+        if (clicked !== null && clicked === e.target && performance.now() - downtime >= 500) {
             islongclick = true;
             reload();
         }
     }, 500);
-})
+});
 
 
 const mask_specker = document.getElementsByName("mask_specker");
@@ -126,7 +162,7 @@ for (let i = 0; i < mask_specker.length; i++) {
             maskon[idToname[e.currentTarget.id]] = 0;
         }
         reload();
-    })
+    });
 }
 
 const useimages = document.getElementsByName("useimages");
@@ -153,7 +189,7 @@ function jump_page () {
         page = 0;
     } else if (Number(inputpage.value) > 78) {
         page = 78;
-    } else if (inputpage.value != '') {
+    } else if (inputpage.value !== '') {
         page = Number(inputpage.value);
     } else {
         inputpage.value = page;
@@ -182,15 +218,15 @@ onehandbtn.addEventListener('click', () => {
         onehand_uis.style.display = 'block';
         resize();
     }
-})
+});
 
 let or_onehand_rl = 'right';
 const rlbtn = document.getElementById("right_left");
 rlbtn.addEventListener('click', () => {
-    or_onehand_rl = or_onehand_rl == 'right' ? 'left' : 'right';
-    rlbtn.textContent = or_onehand_rl == 'right' ? '切り替え:左' : '切り替え:右';
+    or_onehand_rl = or_onehand_rl === 'right' ? 'left' : 'right';
+    rlbtn.textContent = or_onehand_rl === 'right' ? '切り替え:左' : '切り替え:右';
     resize();
-})
+});
 
 let isreloaded = false;
 let ismoved = false;
@@ -200,7 +236,7 @@ stick.addEventListener('touchstart', (e) => {
     // clicked = e.target;
     if (!isafter_reload) {
         setTimeout(() => {
-            if (clicked != null && performance.now() - downtime >= 500) {
+            if (clicked !== null && performance.now() - downtime >= 500) {
                 islongclick = true;
                 if (!ismoved) {
                     reload();
@@ -209,7 +245,7 @@ stick.addEventListener('touchstart', (e) => {
             }
         }, 500);
     }
-})
+});
 
 let stick_defaultleft;
 stick.addEventListener('touchmove', (e) => {
@@ -218,8 +254,8 @@ stick.addEventListener('touchmove', (e) => {
         if (!ismoved) {
             ismoved = true;
         }
-        if (clicked == e.target) {
-            if (pointer_x != null) {
+        if (clicked === e.target) {
+            if (pointer_x !== null) {
                 const touch_left = pointer_x - onehand_uis.getBoundingClientRect().left;
                 const max_left = stick_defaultleft + stick.clientWidth / 2;
                 const min_left = stick_defaultleft - stick.clientWidth / 2;
@@ -233,7 +269,7 @@ stick.addEventListener('touchmove', (e) => {
             }
         }
     }
-})
+});
 
 stick.addEventListener('touchend', () => {
     // clicked = null;
@@ -247,11 +283,11 @@ stick.addEventListener('touchend', () => {
     islongclick = false;
     ismoved = false;
     isreloaded = false;
-})
+});
 
 const slider = document.getElementById("slider");
 function slider_reset () {
-    if (class_mask.length != 0) {
+    if (class_mask.length !== 0) {
         const nextmask = class_mask[0];
         slider.style.height = nextmask.getBoundingClientRect().height + 'px';
         slider.style.top = nextmask.getBoundingClientRect().top + window.scrollY + 'px';
@@ -261,34 +297,35 @@ function slider_reset () {
     }
 }
 
+let intervalid = null;
 const mask_event = (e) => {
     e.preventDefault();
     downtime = performance.now();
     clicked = e.target; //処理間に合わないので応急処置的に
-    const target = clicked.id == "slider" 
-                ? class_mask.length != 0 
+    const target = clicked.id === "slider" 
+                ? class_mask.length !== 0 
                     ? class_mask[0] 
                     : clicked 
                 : clicked;
     islongclick = false;
     setTimeout(() => {
-        if (clicked != null && performance.now() - downtime >= 500) {
+        if (clicked !== null && performance.now() - downtime >= 500) {
             islongclick = true;
         }
     }, 500);
-    const down_x = e.type == 'touchstart' ? e.touches[0].pageX : e.pageX;
-    const down_y = e.type == 'touchstart' ? e.touches[0].pageY : e.pageY;
-    pointer_x = e.type == 'touchstart' ? e.touches[0].pageX : e.pageX;
-    pointer_y = e.type == 'touchstart' ? e.touches[0].pageY : e.pageY;
-    if (intervalid == null) {
+    const down_x = e.type === 'touchstart' ? e.touches[0].pageX : e.pageX;
+    const down_y = e.type === 'touchstart' ? e.touches[0].pageY : e.pageY;
+    pointer_x = e.type === 'touchstart' ? e.touches[0].pageX : e.pageX;
+    pointer_y = e.type === 'touchstart' ? e.touches[0].pageY : e.pageY;
+    if (intervalid === null) {
         intervalid = setInterval(() => {
             const row = target.id.replace(/[^0-9]/g, '');
-            const name = maskon["+人名"] == 1 && speaker[page][row] != "改行" 
+            const name = maskon["+人名"] === 1 && speaker[page][row] !== "改行" 
                         ? "+人名" 
-                        : speaker[page][row] != undefined 
+                        : speaker[page][row] !== undefined 
                         ? speaker[page][row] 
                         : "その他";
-            if (clicked != null) {
+            if (clicked !== null) {
                 if (islongclick) {
                     if (img_width * mag_top[name] >= pointer_y) {
                         target.style.height = img_width * (mag_bottom - mag_top[name]) + 'px';
@@ -299,11 +336,11 @@ const mask_event = (e) => {
                         target.style.height = img_width * mag_bottom - pointer_y + 'px';
                         target.style.top = pointer_y + 'px';
                     }
-                    if (clicked.id == 'slider') {
+                    if (clicked.id === 'slider') {
                         slider.style.height = target.getBoundingClientRect().height + 'px';
                         slider.style.top = target.getBoundingClientRect().top + 'px';
                     }
-                } else if (pointer_x != down_x || pointer_y != down_y) {
+                } else if (pointer_x !== down_x || pointer_y !== down_y) {
                     islongclick = true;
                 }
             } else {
@@ -312,12 +349,9 @@ const mask_event = (e) => {
                     target.style.top = img_width * mag_top[name] + 'px';
                 } else {
                     islongclick = false;
-                    if (class_mask.length != 0) {
-                        target.remove();
-                        isafter_reload = false;
-                    } else {
-                        pageup();
-                    }
+                    const array_mask = Array.prototype.slice.call(class_mask);
+                    const index = array_mask.indexOf(target);
+                    mask_remove(index);
                 }
                 clearInterval(intervalid);
                 intervalid = null;
@@ -330,12 +364,12 @@ const mask_event = (e) => {
 slider.addEventListener('touchstart', mask_event);
 slider.addEventListener('touchmove', (e) => {
     e.preventDefault();
-})
+});
 
 
 const fullscreen = document.getElementById("fullscreen");
 fullscreen.addEventListener('click', () => {
-    if (window.outerWidth == window.screen.width && window.outerHeight == window.screen.height) {
+    if (window.outerWidth === window.screen.width && window.outerHeight === window.screen.height) {
         // document.exitFullscreen();
 
         // Chrome & Firefox v64以降
@@ -374,7 +408,7 @@ fullscreen.addEventListener('click', () => {
             document.body.msRequestFullscreen();
         }     
     }
-})
+});
 
 
 function imagereload (path, p) {
@@ -389,10 +423,10 @@ function reload () {
     
     for (let i = 0; i < speaker[page].length; i++) {
         let speaking = speaker[page][i];
-        if (speaking != undefined) {
+        if (speaking !== undefined) {
             let back_page = 0;
             let back_row = 0;
-            while (speaking == '改行') {
+            while (speaking === '改行') {
                 back_row++;
                 if (i - back_row < 0) {
                     back_row = i - 35;
@@ -401,21 +435,29 @@ function reload () {
                 speaking = speaker[page - back_page][i - back_row];
             }
 
-            if (maskon[speaking] == undefined) {
+            if (maskon[speaking] === undefined) {
                 let union = 0;
                 for (let i = 0; i < exception[speaking].length; i++) {
                     union += maskon[exception[speaking][i]];
                 }
                 if (union > 0) {
                     addmask(i);
+                    continue;
                 }
             } else {
-                if (maskon[speaking] == 1) {
+                if (maskon[speaking] === 1) {
                     addmask(i);
+                    continue;
                 }
             }
-        } else if (maskon["その他"] == 1) {
+        } else if (maskon["その他"] === 1) {
             addmask(i);
+            continue;
+        }
+        
+        if (maskon["セリフ後"] === 1 && class_mask.length !== 0) {
+            addmask(i, true);
+            continue;
         }
     }
 
@@ -431,12 +473,12 @@ function reload () {
 
 window.addEventListener('resize', () => {
     resize();
-    if (window.outerWidth == window.screen.width && window.outerHeight == window.screen.height) {
+    if (window.outerWidth === window.screen.width && window.outerHeight === window.screen.height) {
         fullscreen.textContent = '全画面解除';
     } else if (document.exitFullscreen) {
         fullscreen.textContent = '全画面';
     }
-})
+});
 
 
 function resize () {
@@ -457,9 +499,9 @@ function resize () {
 
     for (let i = 0; i < class_mask.length; i++) {
         const row = class_mask[i].id.replace(/[^0-9]/g, '');
-        const name = maskon["+人名"] == 1 && speaker[page][row] != "改行" 
+        const name = maskon["+人名"] === 1 && speaker[page][row] !== "改行" 
                     ? "+人名" 
-                    : speaker[page][row] != undefined 
+                    : speaker[page][row] !== undefined 
                     ? speaker[page][row] 
                     : "その他";
         class_mask[i].style.width = img_width * mag_width + 'px';
@@ -494,15 +536,15 @@ function resize () {
     const script = document.getElementById("script");
     if (isonehandmode) {
         script.style.width = window_width > script_scroll.clientWidth ? script_scroll.clientWidth + 'px' : window_width + 'px';
-    } else if (script_scroll.clientWidth != 0) {
+    } else if (script_scroll.clientWidth !== 0) {
         script.style.width = script_scroll.clientWidth + 'px';
     }
-    if (script_scroll.clientWidth != 0) {
+    if (script_scroll.clientWidth !== 0) {
         script.style.left = (img_width - script.clientWidth) / 2 + 'px';
     }
 
     const script_area = document.getElementById("script_area");
-    if (or_onehand_rl == 'right') {
+    if (or_onehand_rl === 'right') {
         script_area.style.left = '0px';
         onehand_uis.style.left = img_width + 'px';
     } else {
@@ -512,17 +554,21 @@ function resize () {
 }
 
 
-let intervalid = null;
-function addmask (row) {
+function addmask (row, isafter = false) {
     const masks = document.getElementById("masks");
     const p = document.createElement('p');
+
     const p_id = 'r' + row;
-    p.id = p_id;
+    if (!isafter) {
+        p.id = p_id;
+    } else {
+        p.id = p_id + '_after';
+    }
     p.className = "mask";
 
-    const name = maskon["+人名"] == 1 && speaker[page][row] != "改行" 
+    const name = maskon["+人名"] === 1 && speaker[page][row] !== "改行" 
                 ? "+人名" 
-                : speaker[page][row] != undefined 
+                : speaker[page][row] !== undefined 
                 ? speaker[page][row] 
                 : "その他";
     p.style.width = img_width * mag_width + 'px';
@@ -534,20 +580,20 @@ function addmask (row) {
     p.addEventListener('mousedown', mask_event);
     p.addEventListener('touchmove', (e) => {
         e.preventDefault();
-    })
+    });
 
     masks.appendChild(p);    
 }
 
 
 const clickstart = (e) => {
-    if (clicked == null) {
+    if (clicked === null) {
         clicked = e.target;
     }
 }
 
 const clickend = () => {
-    if (clicked != null) {
+    if (clicked !== null) {
         clicked = null;
     }
     pointer_x = null;
@@ -563,18 +609,18 @@ let pointer_x;
 let pointer_y;
 
 window.addEventListener('touchmove', (e) => {
-    if (clicked != null) {
+    if (clicked !== null) {
         pointer_x = e.touches[0].pageX;
         pointer_y = e.touches[0].pageY;
     }
-})
+});
 
 window.addEventListener('mousemove', (e) => {
-    if (clicked != null) {
+    if (clicked !== null) {
         pointer_x = e.pageX;
         pointer_y = e.pageY;
     }
-})
+});
 
 
 const tips_for_mobile = document.getElementById("for_mobile");
@@ -583,7 +629,7 @@ let or_tips_mobile_pc = 'mobile';
 
 const tipschange = document.getElementById("tipschange");
 tipschange.addEventListener('click', (e) => {
-    if (or_tips_mobile_pc == 'mobile') {
+    if (or_tips_mobile_pc === 'mobile') {
         or_tips_mobile_pc = 'pc';
         tips_for_mobile.style.display = 'none';
         tips_for_pc.style.display = 'block';
@@ -594,7 +640,7 @@ tipschange.addEventListener('click', (e) => {
         tips_for_mobile.style.display = 'block';
         e.target.textContent = 'PC用操作説明を見る';
     }
-})
+});
 
 const main = document.getElementById("main");
 const tips = document.getElementById("tips");
@@ -616,31 +662,31 @@ open_tipsbtn.addEventListener('click', () => {
     main.style.display = 'none';
     tips.style.display = 'block';
     window.scroll({top: 0});
-})
+});
 
 
 function loadimg_befor (i, j, images) {
-    if (imgloading['any'] == 1) {
+    if (imgloading['any'] === 1) {
         const img = document.createElement('img');
-        const path = images == 'load_all' ? document.getElementById(loadimages_selected[i]).value : document.getElementById(images).value;
+        const path = images === 'load_all' ? document.getElementById(loadimages_selected[i]).value : document.getElementById(images).value;
         img.src = allimages_folder_path + path +  '/page_' + ('000' + j).slice( -3 ) + '.png';
         img.style.display = 'none';
         img.addEventListener('load', () => {
             loadimg_after(i, j, images);
             img.remove();
-        })
+        });
 
         const loadimages = document.getElementById("loadimages");
         loadimages.appendChild(img);
-    } else if (imgloading['any'] == 2) {
+    } else if (imgloading['any'] === 2) {
         current_i.textContent = i;
         current_j.textContent = j;
     }
 }
 
 function loadimg_after (i, j, images) {
-    denom = images == 'load_all' ? denominator : 79;
-    if (processed_count == 0) {
+    denom = images === 'load_all' ? denominator : 79;
+    if (processed_count === 0) {
         percent.textContent = parseInt((79 * i + (j + 1)) / denom * 90) + '%';
     } else if (processed_count < min_count[images]) {
         // percent.textContent = parseInt((79 * i + (j + 1) + denominator * processed_count) / (denominator * min_count) * 99) + '%';
@@ -648,23 +694,23 @@ function loadimg_after (i, j, images) {
     }
 
     j++;
-    if (j == 79) {
+    if (j === 79) {
         j = 0;
         i++;
     }
 
-    if (i < 1 || (images == 'load_all' && i < loadimages_selected.length)) {
+    if (i < 1 || (images === 'load_all' && i < loadimages_selected.length)) {
         loadimg_befor(i, j, images);
     } else {
         processed_count++;
         if (processed_count < min_count[images]) {
             loadimg_befor(0, 0, images);
         } else {
-            if (images == 'load_all') {
+            if (images === 'load_all') {
                 for (let k = 0; k < loadimages_selected.length; k ++) {
                     const isloaded = document.getElementById('isloaded_' + loadimages_selected[k]);
                     isloaded.textContent = '済';
-                    if (imgloading[loadimages_selected[k]] == 0) {
+                    if (imgloading[loadimages_selected[k]] === 0) {
                         const eachload_imgbtn = document.getElementById(loadimages_selected[k] + 'btn');
                         eachload_imgbtn.textContent = '再読み込み';
                     }
@@ -674,7 +720,7 @@ function loadimg_after (i, j, images) {
                 isloaded.textContent = '済';
             }
             const load_imgbtn = document.getElementById(images + 'btn');
-            load_imgbtn.textContent = images == 'load_all' ? '選択一括読み込み' : '再読み込み';
+            load_imgbtn.textContent = images === 'load_all' ? '選択一括読み込み' : '再読み込み';
             percent.textContent = '100%';                
             completion.textContent = '完了';
 
@@ -696,7 +742,7 @@ for (let i = 0; i < loadimages.length; i++) {
             loadimages_selected.splice(loadimages_selected.indexOf(e.currentTarget.id), 1);
         }
         denominator = 79 * (loadimages_selected.length)
-    })
+    });
 }
 
 const min_count = {'load_all':2, "load_original":2, "load_narita_20250718":2, "load_narita_20250720":2, "load_hasegawa_20250802":2, "load_hasegawa_20250805":2};
@@ -714,8 +760,8 @@ const class_load_imgbtn = document.getElementsByClassName("load_imagesbtn");
 for (let i = 0; i < class_load_imgbtn.length; i++) {
     class_load_imgbtn[i].addEventListener('click', () => {
         const images = class_load_imgbtn[i].id.split('btn')[0];
-        if (imgloading['any'] == 0 && imgloading[images] == 0) {
-            if (images != 'load_all' || loadimages_selected.length > 0) {
+        if (imgloading['any'] === 0 && imgloading[images] === 0) {
+            if (images !== 'load_all' || loadimages_selected.length > 0) {
                 imgloading['any'] = 1;
                 imgloading[images] = 1;
 
@@ -731,11 +777,11 @@ for (let i = 0; i < class_load_imgbtn.length; i++) {
 
                 loadimg_befor(0, 0, images);
             }
-        } else if (imgloading['any'] == 1 && imgloading[images] == 1) {
+        } else if (imgloading['any'] === 1 && imgloading[images] === 1) {
             imgloading['any'] = 0;
             imgloading[images] = 2;
             class_load_imgbtn[i].textContent = '再開';
-        } else if (imgloading['any'] == 0 && imgloading[images] == 2) {
+        } else if (imgloading['any'] === 0 && imgloading[images] === 2) {
             imgloading['any'] = 1;
             imgloading[images] = 1;
 
@@ -748,7 +794,7 @@ for (let i = 0; i < class_load_imgbtn.length; i++) {
             loadimg_befor(Number(current_i.textContent), Number(current_j.textContent), images);
             class_load_imgbtn[i].textContent = '一時停止';
         }
-    })
+    });
 }
 
 
@@ -756,7 +802,7 @@ window.addEventListener('load', () => {
     imagechange();
     reload();
     resize();
-})
+});
 
 
 const speaker = [
