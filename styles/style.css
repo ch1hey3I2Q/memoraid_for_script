@@ -56,7 +56,7 @@ body::-webkit-scrollbar {
 
 .eachprogress {
     position: absolute;
-    left: 270px;
+    left: 290px;
 }
 
 #load_allbtn {
@@ -80,12 +80,12 @@ body::-webkit-scrollbar {
 
 .load_eachimagesbtn {
     position: absolute;
-    left: 150px;
+    left: 170px;
 }
 
 .isloaded {
     position: absolute;
-    left: 235px;
+    left: 255px;
 }
 
 
