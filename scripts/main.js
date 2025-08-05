@@ -699,11 +699,11 @@ for (let i = 0; i < loadimages.length; i++) {
     })
 }
 
-const min_count = {'load_all':2, "load_original":2, "load_narita_20250718":2, "load_narita_20250720":2, "load_hasegawa_20250802":2};
+const min_count = {'load_all':2, "load_original":2, "load_narita_20250718":2, "load_narita_20250720":2, "load_hasegawa_20250802":2, "load_hasegawa_20250805":2};
 let processed_count = 0;
 let denominator;
 
-const imgloading  = {'any':0, 'load_all':0, "load_original":0, "load_narita_20250718":0, "load_narita_20250720":0, "load_hasegawa_20250802":0};
+const imgloading  = {'any':0, 'load_all':0, "load_original":0, "load_narita_20250718":0, "load_narita_20250720":0, "load_hasegawa_20250802":0, "load_hasegawa_20250805":0};
 let current_i;
 let current_j;
 let progress;
